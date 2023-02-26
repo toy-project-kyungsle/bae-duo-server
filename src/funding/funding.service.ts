@@ -39,4 +39,8 @@ export class FundingService {
   getFundingById(id: string): Funding {
     return this.funding.find((funding) => funding.id === id);
   }
+
+  deletefunding(id: string): void {
+    this.funding = this.funding.filter((funding) => funding.id !== id);
+  }
 }

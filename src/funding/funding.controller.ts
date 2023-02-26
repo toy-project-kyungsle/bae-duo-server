@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { Funding } from './funding.model';
 import { FundingService } from './funding.service';
 import { CreateFundingDto } from './dto/create-funding.dto';
@@ -20,5 +20,10 @@ export class FundingController {
   @Get('/:id')
   getFundingById(@Param('id') id: string): Funding {
     return this.fundingService.getFundingById(id);
+  }
+
+  @Delete('/:id')
+  deleteFunding(@Param('id') id: string): void {
+    this.fundingService.deletefunding(id);
   }
 }
