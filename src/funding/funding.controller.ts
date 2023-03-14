@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Res,
+} from '@nestjs/common';
 import { Funding } from './funding.model';
 import { FundingService } from './funding.service';
 import { CreateFundingDto } from './dto/create-funding.dto';
@@ -8,8 +16,9 @@ export class FundingController {
   constructor(private fundingService: FundingService) {}
 
   @Get('/')
-  getAllFunding(): Funding[] {
-    return this.fundingService.getAllFundings();
+  async getAllFunding(@Res() res): Promise<void> {
+    const data = await this.fundingService.getAllFundings();
+    res.json(data);
   }
 
   @Post()

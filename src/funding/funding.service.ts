@@ -2,13 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { Funding } from './funding.model';
 import { CreateFundingDto } from './dto/create-funding.dto';
 import { v1 as uuid } from 'uuid';
+import connection from 'src/db';
 
 @Injectable()
 export class FundingService {
   private funding: Funding[] = [];
 
-  getAllFundings(): Funding[] {
-    return this.funding;
+  async getAllFundings(): Promise<Funding[]> {
+    return connection
+      .execute('SELECT * FROM funding')
+      .then((result: [Funding[]]) => result[0]);
   }
 
   createFunding(createFundingDto: CreateFundingDto) {

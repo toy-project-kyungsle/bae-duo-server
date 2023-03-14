@@ -1,10 +1,10 @@
-import { createConnection } from 'mysql2';
+import { createPool } from 'mysql2';
 
-const connection = createConnection({
-  host: process.env.MYSQL_HOST,
-  user: process.env.MYSQL_USER,
-  database: process.env.MYSQL_DATABASE,
-  password: process.env.MYSQL_PASSWORD,
+const pool = createPool({
+  host: '127.0.0.1',
+  user: 'root',
+  database: 'baeduo',
+  password: 'test123456!@',
 });
 
-export default connection;
+export default pool.promise();
