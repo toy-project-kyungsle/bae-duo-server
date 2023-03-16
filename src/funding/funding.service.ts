@@ -2,14 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { Funding } from './funding.model';
 import { CreateFundingDto } from './dto/create-funding.dto';
 import { v1 as uuid } from 'uuid';
-import connection from 'src/db';
+import { createPool } from 'mysql2';
+// import connection from 'src/db';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FundingService {
+  constructor(private readonly configService: ConfigService) {}
   private funding: Funding[] = [];
+  private connection = createPool({
+    host: this.configService.get<string>('MYSQL_HOST', 'localhost'),
+    user: 'root',
+    database: 'baeduo',
+    password: 'test123456!@',
+  }).promise();
 
   async getAllFundings(): Promise<Funding[]> {
-    return connection
+    return this.connection
       .execute('SELECT * FROM funding')
       .then((result: [Funding[]]) => result[0]);
   }

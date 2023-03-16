@@ -4,6 +4,10 @@ import { FundingModule } from './funding/funding.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [BoardsModule, FundingModule, ConfigModule.forRoot()],
+  imports: [
+    BoardsModule,
+    FundingModule,
+    ConfigModule.forRoot({ envFilePath: `.env` }),
+  ],
 })
 export class AppModule {}
