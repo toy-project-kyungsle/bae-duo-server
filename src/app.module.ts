@@ -7,7 +7,7 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     BoardsModule,
     FundingModule,
-    ConfigModule.forRoot({ envFilePath: `.env` }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: `.env` }),
   ],
 })
 export class AppModule {}

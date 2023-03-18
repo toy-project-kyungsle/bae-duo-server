@@ -11,10 +11,11 @@ export class FundingService {
   constructor(private readonly configService: ConfigService) {}
   private funding: Funding[] = [];
   private connection = createPool({
-    host: this.configService.get<string>('MYSQL_HOST', 'localhost'),
-    user: 'root',
-    database: 'baeduo',
-    password: 'test123456!@',
+    host: this.configService.get<string>('MYSQL_HOST'),
+    user: this.configService.get<string>('MYSQL_USER'),
+    port: this.configService.get<number>('MYSQL_PORT'),
+    database: this.configService.get<string>('MYSQL_DATABASE'),
+    password: this.configService.get<string>('MYSQL_PASSWORD'),
   }).promise();
 
   async getAllFundings(): Promise<Funding[]> {
