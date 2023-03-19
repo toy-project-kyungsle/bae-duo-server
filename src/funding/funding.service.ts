@@ -1,59 +1,62 @@
-import { Injectable } from '@nestjs/common';
-import { Funding } from './funding.model';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { FundingStatus } from './funding.model';
 import { CreateFundingDto } from './dto/create-funding.dto';
 import { v1 as uuid } from 'uuid';
-import { createPool } from 'mysql2';
-// import connection from 'src/db';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FundingRepository } from './funding.repository';
+import { Funding } from './funding.entity';
 
 @Injectable()
 export class FundingService {
-  constructor(private readonly configService: ConfigService) {}
-  private funding: Funding[] = [];
-  private connection = createPool({
-    host: this.configService.get<string>('MYSQL_HOST'),
-    user: this.configService.get<string>('MYSQL_USER'),
-    port: this.configService.get<number>('MYSQL_PORT'),
-    database: this.configService.get<string>('MYSQL_DATABASE'),
-    password: this.configService.get<string>('MYSQL_PASSWORD'),
-  }).promise();
+  constructor(
+    @InjectRepository(FundingRepository)
+    private fundingRepository: FundingRepository,
+  ) {}
 
-  async getAllFundings(): Promise<Funding[]> {
-    return this.connection
-      .execute('SELECT * FROM funding')
-      .then((result: [Funding[]]) => result[0]);
+  async getFundingById(id: number): Promise<Funding> {
+    const found = await this.fundingRepository.findOne({ where: { id } });
+
+    if (!found) {
+      throw new NotFoundException(`값을 찾을 수 없습니다. : ${id}`);
+    }
+    return found;
   }
 
-  createFunding(createFundingDto: CreateFundingDto) {
-    const {
-      brand,
-      deadline,
-      min_member,
-      cur_price,
-      starter,
-      total_price,
-      status,
-    } = createFundingDto;
-    const funding: Funding = {
-      id: uuid(),
-      starter,
-      brand,
-      total_price,
-      cur_price,
-      deadline,
-      min_member,
-      status,
-      cur_member: 0,
-    };
-    this.funding.push(funding);
-    return funding;
-  }
+  // async getAllFundings(): Promise<Funding[]> {
+  //   return this.funding;
+  // }
 
-  getFundingById(id: string): Funding {
-    return this.funding.find((funding) => funding.id === id);
-  }
+  // createFunding(createFundingDto: CreateFundingDto) {
+  //   const {
+  //     brand,
+  //     deadline,
+  //     min_member,
+  //     cur_price,
+  //     starter,
+  //     total_price,
+  //     status,
+  //   } = createFundingDto;
+  //   const funding: Funding = {
+  //     id: uuid(),
+  //     starter,
+  //     brand,
+  //     total_price,
+  //     cur_price,
+  //     deadline,
+  //     min_member,
+  //     status,
+  //     cur_member: 0,
+  //   };
+  //   this.funding.push(funding);
+  //   return funding;
+  // }
 
-  deletefunding(id: string): void {
-    this.funding = this.funding.filter((funding) => funding.id !== id);
-  }
+  // getFundingById(id: string): Funding {
+  //   return this.funding.find((funding) => funding.id === id);
+  // }
+
+  // deletefunding(id: string): void {
+  //   this.funding = this.funding.filter((funding) => funding.id !== id);
+  // }
 }
