@@ -29,4 +29,7 @@ export class Funding extends BaseEntity {
 
   @Column()
   status: FundingStatus;
+
+  @Column()
+  createdAt: Date;
 }
