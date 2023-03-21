@@ -7,9 +7,9 @@ import {
   Delete,
   Res,
 } from '@nestjs/common';
-import { FundingStatus } from './funding.model';
+// import { FundingStatus } from './funding.model';
 import { FundingService } from './funding.service';
-import { CreateFundingDto } from './dto/create-funding.dto';
+// import { CreateFundingDto } from './dto/create-funding.dto';
 import { Funding } from './funding.entity';
 
 @Controller('funding')
@@ -21,11 +21,10 @@ export class FundingController {
     return this.fundingService.getFundingById(id);
   }
 
-  // @Get('/')
-  // async getAllFunding(@Res() res): Promise<void> {
-  //   const data = await this.fundingService.getAllFundings();
-  //   res.json(data);
-  // }
+  @Get('/')
+  async getAllFunding(): Promise<Funding[]> {
+    return this.fundingService.getAllFundings();
+  }
 
   // @Post()
   // createFunding(@Body() createFundingDto: CreateFundingDto): Funding {

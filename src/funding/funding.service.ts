@@ -24,9 +24,13 @@ export class FundingService {
     return found;
   }
 
-  // async getAllFundings(): Promise<Funding[]> {
-  //   return this.funding;
-  // }
+  async getAllFundings(): Promise<Funding[]> {
+    const found = await this.fundingRepository.find();
+    if (!found) {
+      throw new NotFoundException(`값을 찾을 수 없습니다.`);
+    }
+    return found;
+  }
 
   // createFunding(createFundingDto: CreateFundingDto) {
   //   const {
