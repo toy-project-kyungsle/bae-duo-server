@@ -1,6 +1,7 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
 import { FundingStatus } from './funding.model';
 
+@Entity()
 export class Funding extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -18,10 +19,13 @@ export class Funding extends BaseEntity {
   cur_price: number;
 
   @Column()
-  deadline: Date;
+  min_member: number;
 
   @Column()
-  min_member: number;
+  cur_member: number;
+
+  @Column()
+  deadline: Date;
 
   @Column()
   status: FundingStatus;

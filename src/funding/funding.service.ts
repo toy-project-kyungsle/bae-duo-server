@@ -1,17 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { FundingStatus } from './funding.model';
-import { CreateFundingDto } from './dto/create-funding.dto';
-import { v1 as uuid } from 'uuid';
-import { ConfigService } from '@nestjs/config';
+// import { FundingStatus } from './funding.model';
+// import { CreateFundingDto } from './dto/create-funding.dto';
+// import { v1 as uuid } from 'uuid';
+// import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FundingRepository } from './funding.repository';
+// import { FundingRepository } from './funding.repository';
 import { Funding } from './funding.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class FundingService {
   constructor(
-    @InjectRepository(FundingRepository)
-    private fundingRepository: FundingRepository,
+    @InjectRepository(Funding)
+    private fundingRepository: Repository<Funding>,
   ) {}
 
   async getFundingById(id: number): Promise<Funding> {

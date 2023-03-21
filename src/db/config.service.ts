@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
+import { Funding } from 'src/funding/funding.entity';
 
 @Injectable()
 export class MySqlConfigService implements TypeOrmOptionsFactory {
@@ -14,8 +15,8 @@ export class MySqlConfigService implements TypeOrmOptionsFactory {
       port: +this.configService.get<number>('MYSQL_PORT'),
       host: this.configService.get<string>('MYSQL_HOST'),
       database: this.configService.get<string>('MYSQL_DATABASE'),
-      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      // autoLoadEntities: true,
+      entities: [Funding],
+      autoLoadEntities: true,
     };
   }
 }
