@@ -6,12 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MySqlConfigModule } from './db/config.module';
 import { MySqlConfigService } from './db/config.service';
 import { BillModule } from './bill/bill.module';
+import { AttendantModule } from './attendant/attendant.module';
 
 @Module({
   imports: [
     BoardsModule,
     FundingModule,
     BillModule,
+    AttendantModule,
     ConfigModule.forRoot({ isGlobal: true, envFilePath: `.env` }),
     TypeOrmModule.forRootAsync({
       imports: [MySqlConfigModule],
