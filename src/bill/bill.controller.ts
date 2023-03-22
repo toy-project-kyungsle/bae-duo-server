@@ -7,7 +7,7 @@ export class BillController {
   constructor(private billService: BillService) {}
 
   @Get('/')
-  async getAllFunding(): Promise<Bill[]> {
-    return this.billService.getAllFundings();
+  async getAllBills(): Promise<Bill[]> {
+    return this.billService.getAllBills();
   }
 }

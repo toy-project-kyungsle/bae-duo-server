@@ -7,7 +7,7 @@ export class AttendantController {
   constructor(private attendantService: AttendantService) {}
 
   @Get('/')
-  async getAllFunding(): Promise<Attendant[]> {
-    return this.attendantService.getAllFundings();
+  async getAllAttendants(): Promise<Attendant[]> {
+    return this.attendantService.getAllAttendants();
   }
 }

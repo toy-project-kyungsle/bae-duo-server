@@ -10,7 +10,7 @@ export class AttendantService {
     private attendantRepository: Repository<Attendant>,
   ) {}
 
-  async getAllFundings(): Promise<Attendant[]> {
+  async getAllAttendants(): Promise<Attendant[]> {
     const found = await this.attendantRepository.find();
     if (!found) {
       throw new NotFoundException(`값을 찾을 수 없습니다.`);

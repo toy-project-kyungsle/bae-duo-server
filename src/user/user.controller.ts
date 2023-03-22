@@ -7,7 +7,7 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get('/')
-  async getAllFunding(): Promise<User[]> {
-    return this.userService.getAllFundings();
+  async getAllUsers(): Promise<User[]> {
+    return this.userService.getAllUsers();
   }
 }
