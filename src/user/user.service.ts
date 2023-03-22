@@ -1,16 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Bill } from './bill.entity';
+import { User } from './user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class BillService {
+export class UserService {
   constructor(
-    @InjectRepository(Bill)
-    private billRepository: Repository<Bill>,
+    @InjectRepository(User)
+    private billRepository: Repository<User>,
   ) {}
 
-  async getAllFundings(): Promise<Bill[]> {
+  async getAllFundings(): Promise<User[]> {
     const found = await this.billRepository.find();
     if (!found) {
       throw new NotFoundException(`값을 찾을 수 없습니다.`);

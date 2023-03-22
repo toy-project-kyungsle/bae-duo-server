@@ -1,21 +1,18 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
 
 @Entity()
-export class Bill extends BaseEntity {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  attendants: string;
+  name: string;
 
   @Column()
-  total_price: number;
+  Oauth: string;
 
   @Column()
-  bank_account: string;
-
-  @Column()
-  delivery_fee: number;
+  session: string;
 
   @Column()
   createdAt: Date;
