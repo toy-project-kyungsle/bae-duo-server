@@ -8,6 +8,7 @@ import { MySqlConfigService } from './db/config.service';
 import { BillModule } from './bill/bill.module';
 import { AttendantModule } from './attendant/attendant.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserModule } from './user/user.module';
       useClass: MySqlConfigService,
       inject: [MySqlConfigService],
     }),
+    AuthModule,
   ],
 })
 export class AppModule {}
