@@ -7,10 +7,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor() {
     super({
       clientID: 'CLIENT_ID', // CLIENT_ID
-      clientSecret: 'CLIENT_SECRET', // CLIENT_SECRET
+      clientSecret: 'SECRET', // CLIENT_SECRET
       callbackURL: 'http://localhost:3000/auth/google/callback',
       passReqToCallback: true,
-      scope: ['profile'],
+      scope: ['profile, email'],
     });
   }
   // @nestjs/passport PassportStrategy를 상속
@@ -23,14 +23,18 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     request: any,
     accessToken: string,
     refreshToken: string,
-    profile,
+    profile: any,
     done: any,
   ) {
     try {
       console.log(profile);
-
+      const { name, emails } = profile;
       const jwt = 'placeholderJWT';
       const user = {
+        email: emails[0].value,
+        firstName: name.familyName,
+        lastName: name.givenName,
+        accessToken,
         jwt,
       };
       done(null, user);
