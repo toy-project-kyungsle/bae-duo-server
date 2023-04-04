@@ -12,6 +12,9 @@ export class Bill extends BaseEntity {
   total_price: number;
 
   @Column()
+  bank_name: string;
+
+  @Column()
   bank_account: string;
 
   @Column()
