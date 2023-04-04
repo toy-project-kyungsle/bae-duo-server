@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 // import { FundingRepository } from './funding.repository';
 import { Funding } from './funding.entity';
 import { Repository } from 'typeorm';
+import { CreateFundingDto } from './dto/create-funding.dto';
 
 @Injectable()
 export class FundingService {
@@ -30,5 +31,13 @@ export class FundingService {
       throw new NotFoundException(`값을 찾을 수 없습니다.`);
     }
     return found;
+  }
+
+  async setFunding(sentData: CreateFundingDto): Promise<Funding> {
+    const instance = await this.fundingRepository.save(sentData);
+    if (!instance) {
+      throw new NotFoundException(`주문서를 생성할 수 없습니다.`);
+    }
+    return instance;
   }
 }
