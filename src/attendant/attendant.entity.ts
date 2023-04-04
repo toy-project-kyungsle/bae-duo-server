@@ -6,6 +6,9 @@ export class Attendant extends BaseEntity {
   id: number;
 
   @Column()
+  funding_id: number;
+
+  @Column()
   user_id: number;
 
   @Column()
