@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Attendant } from './attendant.entity';
 import { Repository } from 'typeorm';
+import { CreateAttendantDto } from './dto/create-attendant.dto';
 
 @Injectable()
 export class AttendantService {
@@ -9,6 +10,14 @@ export class AttendantService {
     @InjectRepository(Attendant)
     private attendantRepository: Repository<Attendant>,
   ) {}
+
+  async setAttendant(sentData: CreateAttendantDto): Promise<Attendant> {
+    const instance = await this.attendantRepository.save(sentData);
+    if (!instance) {
+      throw new NotFoundException(`주문서를 생성할 수 없습니다.`);
+    }
+    return instance;
+  }
 
   async getAllAttendants(): Promise<Attendant[]> {
     const found = await this.attendantRepository.find();
