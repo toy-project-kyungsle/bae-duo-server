@@ -8,6 +8,7 @@ import { BillModule } from './bill/bill.module';
 import { AttendantModule } from './attendant/attendant.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { BrandsModule } from './brands/brands.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthModule } from './auth/auth.module';
     BillModule,
     AttendantModule,
     UserModule,
+    BrandsModule,
     ConfigModule.forRoot({ isGlobal: true, envFilePath: `.env` }),
     TypeOrmModule.forRootAsync({
       imports: [MySqlConfigModule],
