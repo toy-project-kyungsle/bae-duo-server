@@ -6,19 +6,19 @@ export class Attendant extends BaseEntity {
   id: number;
 
   @Column()
-  fundingId: number;
+  funding_id: number;
 
   @Column()
-  userId: number;
+  user_id: number;
 
   @Column()
-  userName: string;
+  user_name: string;
 
   @Column()
-  menuPrice: number;
+  menu_price: number;
 
   @Column()
-  hasPaid: boolean;
+  has_paid: boolean;
 
   @Column()
   createdAt: Date;

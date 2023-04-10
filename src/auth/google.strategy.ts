@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-google-oauth20';
+import { Strategy, Profile, VerifyCallback } from 'passport-google-oauth20';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor() {
     super({
-      clientID: 'CLIENT_ID', // CLIENT_ID
-      clientSecret: 'SECRET', // CLIENT_SECRET
+      clientID: '', // CLIENT_ID
+      clientSecret: '', // CLIENT_SECRET
       callbackURL: 'http://localhost:3000/auth/google/callback',
-      passReqToCallback: true,
-      scope: ['profile, email'],
+      //passReqToCallback: true,
+      scope: ['email', 'profile'],
     });
   }
   // @nestjs/passport PassportStrategy를 상속
@@ -20,27 +20,23 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   // google에서 보내주는 'profile' 정보만 로그로 기록
 
   async validate(
-    request: any,
     accessToken: string,
     refreshToken: string,
-    profile: any,
-    done: any,
+    profile: Profile,
+    done: VerifyCallback,
   ) {
-    try {
-      console.log(profile);
-      const { name, emails } = profile;
-      const jwt = 'placeholderJWT';
-      const user = {
-        email: emails[0].value,
-        firstName: name.familyName,
-        lastName: name.givenName,
-        accessToken,
-        jwt,
-      };
-      done(null, user);
-    } catch (err) {
-      console.error(err);
-      done(err, false);
-    }
+    const { id, name, emails, photos } = profile;
+
+    const user = {
+      provider: 'google',
+      providerId: id, // session에서 user.id를 빼려면, providerId가 아닌 id로 설정해주자.
+      firstName: name.givenName, // 혹은 name: name.givenName으로만 받자.
+      lastName: name.familyName,
+      email: emails[0].value,
+      picture: photos[0].value,
+      accessToken,
+      refreshToken,
+    };
+    return done(null, user);
   }
 }

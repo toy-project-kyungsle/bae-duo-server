@@ -1,7 +1,7 @@
 export class CreateFundingDto {
   starter: string;
   brand: string;
-  minPrice: 0;
-  minMember: number;
+  total_price: 0;
+  min_member: number;
   deadline: Date;
 }

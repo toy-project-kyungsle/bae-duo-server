@@ -13,16 +13,16 @@ export class Funding extends BaseEntity {
   brand: string;
 
   @Column()
-  minPrice: number;
+  total_price: number;
 
   @Column()
-  curPrice: number;
+  cur_price: number;
 
   @Column()
-  minMember: number;
+  min_member: number;
 
   @Column()
-  curMember: number;
+  cur_member: number;
 
   @Column()
   deadline: Date;
