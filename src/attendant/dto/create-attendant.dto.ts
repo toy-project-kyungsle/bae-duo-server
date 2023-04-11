@@ -1,6 +1,6 @@
 export class CreateAttendantDto {
-  fundingId: number;
-  userId: number;
-  userName: string;
-  menuPrice: number;
+  funding_id: number;
+  user_id: number;
+  user_name: string;
+  menu_price: number;
 }

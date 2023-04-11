@@ -1,7 +1,7 @@
 export class CreateBillDto {
   attendants: string;
-  minPrice: number;
-  bankName: string;
-  bankAccount: string;
-  deliveryFee: number;
+  total_price: number;
+  bank_name: string;
+  bank_account: string;
+  delivery_fee: number;
 }
