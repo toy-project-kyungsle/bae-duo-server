@@ -13,7 +13,7 @@ export class Funding extends BaseEntity {
   brand: string;
 
   @Column()
-  totalPrice: number;
+  minPrice: number;
 
   @Column()
   curPrice: number;

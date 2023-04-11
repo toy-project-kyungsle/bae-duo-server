@@ -9,7 +9,7 @@ export class Bill extends BaseEntity {
   attendants: string;
 
   @Column()
-  totalPrice: number;
+  minPrice: number;
 
   @Column()
   bankName: string;
