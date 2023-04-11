@@ -9,16 +9,16 @@ export class Bill extends BaseEntity {
   attendants: string;
 
   @Column()
-  total_price: number;
+  totalPrice: number;
 
   @Column()
-  bank_name: string;
+  bankName: string;
 
   @Column()
-  bank_account: string;
+  bankAccount: string;
 
   @Column()
-  delivery_fee: number;
+  deliveryFee: number;
 
   @Column()
   createdAt: Date;
