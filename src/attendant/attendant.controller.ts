@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { AttendantService } from './attendant.service';
 import { Attendant } from './attendant.entity';
 import { CreateAttendantDto } from './dto/create-attendant.dto';
@@ -15,5 +15,18 @@ export class AttendantController {
   @Get('/')
   async getAllAttendants(): Promise<Attendant[]> {
     return this.attendantService.getAllAttendants();
+  }
+
+  @Get('/:userId')
+  async getAttendantByUserId(
+    @Param('userId') userId: number,
+  ): Promise<Attendant> {
+    return this.attendantService.getAttendantByUserId(userId);
+  }
+
+  @Patch('/:userId')
+  async updateAttendant(@Param('userId') userId: number): Promise<void> {
+    // this.attendantService.updateAttendant(userId);
+    return;
   }
 }
