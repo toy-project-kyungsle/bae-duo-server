@@ -7,8 +7,14 @@ import { CreateAttendantDto } from './dto/create-attendant.dto';
 export class AttendantController {
   constructor(private attendantService: AttendantService) {}
 
+  convertStringToJSON = (string: string) => {
+    const regex = /['`]/g;
+    return string.replace(regex, '"');
+  };
+
   @Post()
   async setAttendant(@Body() sentData: CreateAttendantDto) {
+    sentData.menuInfo = this.convertStringToJSON(sentData.menuInfo);
     return this.attendantService.setAttendant(sentData);
   }
 
@@ -25,7 +31,18 @@ export class AttendantController {
   }
 
   @Patch('/:userId')
-  async updateAttendant(@Param('userId') userId: number): Promise<void> {
+  async updateAttendant(
+    @Param('userId') userId: number,
+    @Body() sentData: { menuInfo: string },
+  ): Promise<void> {
+    const targetAttendant = await this.attendantService.getAttendantByUserId(
+      userId,
+    );
+    const originMenuInfo = JSON.parse(targetAttendant.menuInfo);
+    const newMenuInfo = JSON.parse(this.convertStringToJSON(sentData.menuInfo));
+
+    // TODO origin과 new 데이터를 가지고 update 로직 짜야함
+    console.log(originMenuInfo, newMenuInfo);
     // this.attendantService.updateAttendant(userId);
     return;
   }

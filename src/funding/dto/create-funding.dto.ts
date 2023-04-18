@@ -4,4 +4,5 @@ export class CreateFundingDto {
   minPrice: 0;
   minMember: number;
   deadline: Date;
+  description?: string;
 }
