@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 // import { FundingStatus } from './funding.model';
 // import { CreateFundingDto } from './dto/create-funding.dto';
 // import { v1 as uuid } from 'uuid';
@@ -39,5 +39,12 @@ export class FundingService {
       throw new NotFoundException(`주문서를 생성할 수 없습니다.`);
     }
     return instance;
+  }
+
+  async removeFunding(id: number): Promise<number> {
+    const affectedRowsCnt = (await this.fundingRepository.delete(id)).affected;
+    if (affectedRowsCnt === 0)
+      throw new NotFoundException(`삭제할 펀딩을 찾을 수 없습니다.`);
+    return HttpStatus.ACCEPTED;
   }
 }

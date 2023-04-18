@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 // import { FundingStatus } from './funding.model';
 import { FundingService } from './funding.service';
 import { CreateFundingDto } from './dto/create-funding.dto';
@@ -21,5 +21,10 @@ export class FundingController {
   @Post('/')
   createFunding(@Body() createFundingDto: CreateFundingDto): Promise<Funding> {
     return this.fundingService.setFunding(createFundingDto);
+  }
+
+  @Delete('/:id')
+  deleteFundingById(@Param('id') id: number): Promise<number> {
+    return this.fundingService.removeFunding(id);
   }
 }
