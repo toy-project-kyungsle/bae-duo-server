@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Attendant } from './attendant.entity';
 import { Repository } from 'typeorm';
@@ -45,5 +45,13 @@ export class AttendantService {
       throw new NotFoundException(`값을 찾을 수 없습니다.`);
     }
     return found;
+  }
+
+  async removeAttendant(id: number): Promise<number> {
+    const affectedRowsCnt = (await this.attendantRepository.delete(id))
+      .affected;
+    if (affectedRowsCnt === 0)
+      throw new NotFoundException(`삭제할 펀딩을 찾을 수 없습니다.`);
+    return HttpStatus.ACCEPTED;
   }
 }

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { AttendantService } from './attendant.service';
 import { Attendant } from './attendant.entity';
 import { CreateAttendantDto } from './dto/create-attendant.dto';
@@ -45,5 +53,10 @@ export class AttendantController {
     console.log(originMenuInfo, newMenuInfo);
     // this.attendantService.updateAttendant(userId);
     return;
+  }
+
+  @Delete('/:id')
+  deleteAttendantById(@Param('id') id: number): Promise<number> {
+    return this.attendantService.removeAttendant(id);
   }
 }
