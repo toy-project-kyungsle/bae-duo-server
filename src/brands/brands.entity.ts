@@ -9,6 +9,9 @@ export class Brands extends BaseEntity {
   createdId: number;
 
   @Column()
+  uuid: string;
+
+  @Column()
   name: string;
 
   @Column()
