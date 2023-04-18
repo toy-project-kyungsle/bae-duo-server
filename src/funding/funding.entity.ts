@@ -10,6 +10,9 @@ export class Funding extends BaseEntity {
   starter: string;
 
   @Column()
+  brandId: number;
+
+  @Column()
   brand: string;
 
   @Column()
