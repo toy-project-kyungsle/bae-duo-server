@@ -15,9 +15,6 @@ export class Attendant extends BaseEntity {
   userName: string;
 
   @Column()
-  menuInfo: string;
-
-  @Column()
   hasPaid: boolean;
 
   @Column()
