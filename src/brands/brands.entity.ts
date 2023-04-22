@@ -9,16 +9,13 @@ export class Brands extends BaseEntity {
   createdId: number;
 
   @Column()
-  uuid: string;
-
-  @Column()
   name: string;
 
   @Column()
   orderType: number;
 
   @Column()
-  orderCnt?: number;
+  orderCnt: number;
 
   @Column()
   menuImage: string;
