@@ -51,7 +51,7 @@ export class AttendantService {
     const affectedRowsCnt = (await this.attendantRepository.delete(id))
       .affected;
     if (affectedRowsCnt === 0)
-      throw new NotFoundException(`삭제할 참석 정보를 찾을 수 없습니다.`);
+      throw new NotFoundException(`삭제할 참석 정보를 삭제할 수 없습니다.`);
     return HttpStatus.ACCEPTED;
   }
 }

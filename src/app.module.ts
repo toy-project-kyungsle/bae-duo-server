@@ -9,6 +9,7 @@ import { AttendantModule } from './attendant/attendant.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { BrandsModule } from './brands/brands.module';
+import { AttendantMenuInfoModule } from './attendantMenuInfo/attendantMenuInfo.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { BrandsModule } from './brands/brands.module';
       inject: [MySqlConfigService],
     }),
     AuthModule,
+    AttendantMenuInfoModule,
   ],
 })
 export class AppModule {}
