@@ -1,8 +1,7 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Delete, Param } from '@nestjs/common';
 import { BillService } from './bill.service';
 import { Bill } from './bill.entity';
 import { CreateBillDto } from './dto/create-bill.dto';
-import { Response } from 'express';
 
 @Controller('bill')
 export class BillController {
@@ -16,5 +15,10 @@ export class BillController {
   @Get('/')
   async getAllBills(): Promise<Bill[]> {
     return this.billService.getAllBills();
+  }
+
+  @Delete('/:id')
+  async deleteFundingById(@Param('id') id: number): Promise<number> {
+    return this.billService.removeBill(id);
   }
 }
