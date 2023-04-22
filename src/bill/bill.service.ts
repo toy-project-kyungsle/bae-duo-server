@@ -11,15 +11,15 @@ export class BillService {
     private billRepository: Repository<Bill>,
   ) {}
 
-  async getAllBills(): Promise<Bill[]> {
+  async findAllBills(): Promise<Bill[]> {
     const found = await this.billRepository.find();
     if (!found) {
-      throw new NotFoundException(`값을 찾을 수 없습니다.`);
+      throw new NotFoundException(`주문서를 찾을 수 없습니다.`);
     }
     return found;
   }
 
-  async setBill(sentData: CreateBillDto): Promise<Bill> {
+  async saveBill(sentData: CreateBillDto): Promise<Bill> {
     const instance = await this.billRepository.save(sentData);
     if (!instance) {
       throw new NotFoundException(`주문서를 생성할 수 없습니다.`);
@@ -27,10 +27,10 @@ export class BillService {
     return instance;
   }
 
-  async removeBill(id: number): Promise<number> {
+  async deleteBill(id: number): Promise<number> {
     const affectedRowsCnt = (await this.billRepository.delete(id)).affected;
     if (affectedRowsCnt === 0)
-      throw new NotFoundException(`삭제할 펀딩을 찾을 수 없습니다.`);
+      throw new NotFoundException(`삭제할 주문서를 찾을 수 없습니다.`);
     return HttpStatus.ACCEPTED;
   }
 }

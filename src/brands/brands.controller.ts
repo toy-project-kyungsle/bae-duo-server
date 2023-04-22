@@ -8,17 +8,17 @@ export class BrandsController {
   constructor(private brandsService: BrandsService) {}
 
   @Post()
-  async setBrands(@Body() sentData: CreateBrandsDto) {
-    return this.brandsService.setBrands(sentData);
+  async saveBrand(@Body() sentData: CreateBrandsDto) {
+    return this.brandsService.saveBrand(sentData);
   }
 
   @Get('/')
-  async getAllBrands(): Promise<Brands[]> {
-    return this.brandsService.getAllBrands();
+  async findAllBrands(): Promise<Brands[]> {
+    return this.brandsService.findAllBrands();
   }
 
   @Delete('/:id')
-  async deleteFundingById(@Param('id') id: number): Promise<number> {
+  async deleteBrandById(@Param('id') id: number): Promise<number> {
     return this.brandsService.deleteBrand(id);
   }
 }

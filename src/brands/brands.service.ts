@@ -11,7 +11,7 @@ export class BrandsService {
     private brandsRepository: Repository<Brands>,
   ) {}
 
-  async setBrands(sentData: CreateBrandsDto): Promise<Brands> {
+  async saveBrand(sentData: CreateBrandsDto): Promise<Brands> {
     const instance = await this.brandsRepository.save(sentData);
     if (!instance) {
       throw new NotFoundException(`브랜드 리스트를 생성할 수 없습니다.`);
@@ -19,10 +19,10 @@ export class BrandsService {
     return instance;
   }
 
-  async getAllBrands(): Promise<Brands[]> {
+  async findAllBrands(): Promise<Brands[]> {
     const found = await this.brandsRepository.find();
     if (!found) {
-      throw new NotFoundException(`값을 찾을 수 없습니다.`);
+      throw new NotFoundException(`브랜드 리스트를 찾을 수 없습니다.`);
     }
     return found;
   }
@@ -30,7 +30,7 @@ export class BrandsService {
   async deleteBrand(id: number): Promise<number> {
     const affectedRowsCnt = (await this.brandsRepository.delete(id)).affected;
     if (affectedRowsCnt === 0)
-      throw new NotFoundException(`삭제할 펀딩을 찾을 수 없습니다.`);
+      throw new NotFoundException(`삭제할 브랜드 리스트를 찾을 수 없습니다.`);
     return HttpStatus.ACCEPTED;
   }
 }

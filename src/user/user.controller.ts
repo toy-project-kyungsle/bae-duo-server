@@ -8,17 +8,17 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get('/')
-  async getAllUsers(): Promise<User[]> {
-    return this.userService.getAllUsers();
+  async findAllUsers(): Promise<User[]> {
+    return this.userService.findAllUsers();
   }
 
   @Post('/')
   async createFunding(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.userService.setUser(createUserDto);
+    return this.userService.saveUser(createUserDto);
   }
 
   @Delete('/:id')
   async deleteUserById(@Param('id') id: number): Promise<number> {
-    return this.userService.removeUser(id);
+    return this.userService.deleteUser(id);
   }
 }

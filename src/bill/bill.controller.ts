@@ -8,17 +8,17 @@ export class BillController {
   constructor(private billService: BillService) {}
 
   @Post()
-  async setBill(@Body() sentData: CreateBillDto) {
-    return this.billService.setBill(sentData);
+  async saveBill(@Body() sentData: CreateBillDto) {
+    return this.billService.saveBill(sentData);
   }
 
   @Get('/')
-  async getAllBills(): Promise<Bill[]> {
-    return this.billService.getAllBills();
+  async findAllBills(): Promise<Bill[]> {
+    return this.billService.findAllBills();
   }
 
   @Delete('/:id')
-  async deleteFundingById(@Param('id') id: number): Promise<number> {
-    return this.billService.removeBill(id);
+  async deleteBillById(@Param('id') id: number): Promise<number> {
+    return this.billService.deleteBill(id);
   }
 }

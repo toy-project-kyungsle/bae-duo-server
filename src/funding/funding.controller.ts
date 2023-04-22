@@ -9,24 +9,24 @@ export class FundingController {
   constructor(private fundingService: FundingService) {}
 
   @Get('/:id')
-  async getFundingById(@Param('id') id: number): Promise<Funding> {
-    return this.fundingService.getFundingById(id);
+  async findFundingById(@Param('id') id: number): Promise<Funding> {
+    return this.fundingService.findFundingById(id);
   }
 
   @Get('/')
   async getAllFunding(): Promise<Funding[]> {
-    return this.fundingService.getAllFundings();
+    return this.fundingService.findAllFundings();
   }
 
   @Post('/')
   async createFunding(
     @Body() createFundingDto: CreateFundingDto,
   ): Promise<Funding> {
-    return this.fundingService.setFunding(createFundingDto);
+    return this.fundingService.saveFunding(createFundingDto);
   }
 
   @Delete('/:id')
   async deleteFundingById(@Param('id') id: number): Promise<number> {
-    return this.fundingService.removeFunding(id);
+    return this.fundingService.deleteFunding(id);
   }
 }

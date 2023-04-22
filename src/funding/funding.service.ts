@@ -16,32 +16,32 @@ export class FundingService {
     private fundingRepository: Repository<Funding>,
   ) {}
 
-  async getFundingById(id: number): Promise<Funding> {
+  async findFundingById(id: number): Promise<Funding> {
     const found = await this.fundingRepository.findOne({ where: { id } });
 
     if (!found) {
-      throw new NotFoundException(`값을 찾을 수 없습니다. : ${id}`);
+      throw new NotFoundException(`펀딩을 찾을 수 없습니다. : ${id}`);
     }
     return found;
   }
 
-  async getAllFundings(): Promise<Funding[]> {
+  async findAllFundings(): Promise<Funding[]> {
     const found = await this.fundingRepository.find();
     if (!found) {
-      throw new NotFoundException(`값을 찾을 수 없습니다.`);
+      throw new NotFoundException(`펀딩을 불러올 수 없습니다.`);
     }
     return found;
   }
 
-  async setFunding(sentData: CreateFundingDto): Promise<Funding> {
+  async saveFunding(sentData: CreateFundingDto): Promise<Funding> {
     const instance = await this.fundingRepository.save(sentData);
     if (!instance) {
-      throw new NotFoundException(`주문서를 생성할 수 없습니다.`);
+      throw new NotFoundException(`펀딩을 생성할 수 없습니다.`);
     }
     return instance;
   }
 
-  async removeFunding(id: number): Promise<number> {
+  async deleteFunding(id: number): Promise<number> {
     const affectedRowsCnt = (await this.fundingRepository.delete(id)).affected;
     if (affectedRowsCnt === 0)
       throw new NotFoundException(`삭제할 펀딩을 찾을 수 없습니다.`);
