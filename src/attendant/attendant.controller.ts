@@ -10,10 +10,14 @@ import {
 import { AttendantService } from './attendant.service';
 import { Attendant } from './attendant.entity';
 import { CreateAttendantDto } from './dto/create-attendant.dto';
+import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInfo.service';
 
 @Controller('attendant')
 export class AttendantController {
-  constructor(private attendantService: AttendantService) {}
+  constructor(
+    private attendantService: AttendantService,
+    private attendantMenuInfoService: AttendantMenuInfoService,
+  ) {}
 
   // convertStringToJSON = (string: string) => {
   //   const regex = /['`]/g;
@@ -27,7 +31,24 @@ export class AttendantController {
 
   @Get('/')
   async findAllAttendants(): Promise<Attendant[]> {
-    return this.attendantService.findAllAttendants();
+    const attendants = await this.attendantService.findAllAttendants();
+
+    const getMenuInfoFromDB = async (attendantId: number) => {
+      return await this.attendantMenuInfoService.findAttendantMenuInfosByAttendantId(
+        attendantId,
+      );
+    };
+
+    const getAttendantWithMenuInfo = async (attendants: Attendant[]) => {
+      return await Promise.all(
+        attendants.map(async (attendant) => {
+          attendant['menuInfo'] = await getMenuInfoFromDB(attendant.id);
+          return attendant;
+        }),
+      );
+    };
+
+    return getAttendantWithMenuInfo(attendants);
   }
 
   @Get('/:userId')
