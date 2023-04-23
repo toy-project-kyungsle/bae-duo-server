@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { AttendantService } from './attendant.service';
 import { Attendant } from './attendant.entity';
 import { CreateAttendantDto } from './dto/create-attendant.dto';
@@ -20,7 +28,10 @@ export class AttendantController {
   async saveAttendant(@Body() sentData: CreateAttendantDto) {
     const menuInfos = JSON.parse(this.convertStringToJSON(sentData.menuInfo));
     const result = await this.attendantService.saveAttendant(sentData);
-    menuInfos.forEach((menuInfo) => (menuInfo['attendantId'] = result.id));
+    menuInfos.forEach((menuInfo) => {
+      menuInfo['attendantId'] = result.id;
+      menuInfo['userId'] = result.userId;
+    });
     const createdMenuInfo =
       await this.attendantMenuInfoService.saveAttendantMenuInfo(menuInfos);
     result['menuInfo'] = createdMenuInfo;
@@ -40,17 +51,14 @@ export class AttendantController {
   }
 
   // TODO patch 로직 짜기
-  // @Put('/:a')
-  // async updateAttendant(
-  //   @Param('userId') userId: number,
-  //   @Body() sentData: { menuInfo: string },
-  // ): Promise<void> {
-  //   const targetAttendant = await this.attendantService.findAttendantByUserId(
-  //     userId,
-  //   );
-
-  //   return;
-  // }
+  @Put('/:attendantId')
+  async updateAttendant(
+    @Param('attendantId') attendantId: number,
+    @Body() sentData,
+  ): Promise<Attendant> {
+    const menuInfos = JSON.parse(this.convertStringToJSON(sentData.menuInfo));
+    return this.attendantService.updateAttendant(sentData, menuInfos);
+  }
 
   @Delete('/:id')
   deleteAttendantById(@Param('id') id: number): Promise<number> {

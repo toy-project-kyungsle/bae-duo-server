@@ -20,18 +20,62 @@ export class AttendantService {
     return result;
   }
 
-  async updateAttendant(id: number, newAttendant: Attendant): Promise<void> {
-    const res = await this.attendantRepository.update(id, newAttendant);
-    if (!res) {
-      // TODO NotFoundException 을 쓰는게 아닌 것 같은데 일단 씀
-      throw new NotFoundException('참석 정보를 업데이트 할 수 없습니다.');
-    }
-    return;
+  async updateAttendant(
+    newAttendant: Attendant,
+    newMenuInfos: AttendantMenuInfo[],
+  ): Promise<Attendant> {
+    const attendant: Attendant = await this.findAttendantById(newAttendant.id);
+    if (!attendant)
+      throw new NotFoundException(`참석 메뉴 정보를 찾을 수 없습니다.`);
+    attendant['hasPaid'] = newAttendant['hasPaid'];
+    await this.attendantRepository.save(attendant);
+
+    const menuInfos = await this.attendantMenuInfoRepository.find({
+      where: { attendantId: attendant.id },
+    });
+
+    const insertingMenuInfos = [];
+
+    newMenuInfos.forEach((newMenuInfo) => {
+      newMenuInfo['attendantId'] = newAttendant.id;
+      newMenuInfo['userId'] = newAttendant.userId;
+      const existedMenuInfo = menuInfos.find(
+        (menuInfo) => menuInfo.id === newMenuInfo.id,
+      );
+
+      if (existedMenuInfo) {
+        for (const key in newMenuInfo) {
+          existedMenuInfo[key] = newMenuInfo[key];
+        }
+      } else {
+        insertingMenuInfos.push(newMenuInfo);
+      }
+    });
+
+    insertingMenuInfos.forEach((insertingMenuInfo) =>
+      menuInfos.push(insertingMenuInfo),
+    );
+
+    await this.attendantMenuInfoRepository.save(menuInfos);
+
+    return this.findAttendantWithMenuInfo(attendant);
   }
 
   async findAttendantById(id: number): Promise<Attendant> {
     const attendant = await this.attendantRepository.findOne({
       where: { id },
+    });
+    if (!attendant)
+      throw new NotFoundException(`참석 정보를 찾을 수 없습니다.`);
+    return this.findAttendantWithMenuInfo(attendant);
+  }
+
+  async findAttendantByIdAndUserId(
+    attendantId: number,
+    userId: number,
+  ): Promise<Attendant> {
+    const attendant = await this.attendantRepository.findOne({
+      where: { id: attendantId, userId },
     });
     if (!attendant)
       throw new NotFoundException(`참석 정보를 찾을 수 없습니다.`);

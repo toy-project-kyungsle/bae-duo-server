@@ -9,6 +9,9 @@ export class AttendantMenuInfo extends BaseEntity {
   attendantId: number;
 
   @Column()
+  userId: number;
+
+  @Column()
   menuName: string;
 
   @Column()
