@@ -32,15 +32,15 @@ export class AttendantController {
     return await this.attendantService.findAllAttendants();
   }
 
-  @Get('/:userId')
+  @Get('/:attendantId')
   async findAttendantByUserId(
-    @Param('userId') userId: number,
+    @Param('attendantId') attendantId: number,
   ): Promise<Attendant> {
-    return this.attendantService.findAttendantByUserId(userId);
+    return this.attendantService.findAttendantById(attendantId);
   }
 
   // TODO patch 로직 짜기
-  // @Patch('/:userId')
+  // @Put('/:a')
   // async updateAttendant(
   //   @Param('userId') userId: number,
   //   @Body() sentData: { menuInfo: string },
