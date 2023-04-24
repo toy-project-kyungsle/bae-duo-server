@@ -12,18 +12,20 @@ export class BillService {
   ) {}
 
   async findAllBills(): Promise<Bill[]> {
-    const found = await this.billRepository.find();
-    if (!found) {
-      throw new NotFoundException(`주문서를 찾을 수 없습니다.`);
-    }
-    return found;
+    const bills = await this.billRepository.find();
+    if (!bills) throw new NotFoundException(`주문서를 찾을 수 없습니다.`);
+    return bills;
+  }
+
+  async findBillById(id: number): Promise<Bill> {
+    const bill = await this.billRepository.findOne({ where: { id } });
+    if (!bill) throw new NotFoundException(`주문서를 찾을 수 없습니다.`);
+    return bill;
   }
 
   async saveBill(sentData: CreateBillDto): Promise<Bill> {
     const instance = await this.billRepository.save(sentData);
-    if (!instance) {
-      throw new NotFoundException(`주문서를 생성할 수 없습니다.`);
-    }
+    if (!instance) throw new NotFoundException(`주문서를 생성할 수 없습니다.`);
     return instance;
   }
 

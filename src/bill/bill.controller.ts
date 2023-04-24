@@ -17,6 +17,11 @@ export class BillController {
     return this.billService.findAllBills();
   }
 
+  @Get('/:id')
+  async findBillById(@Param('id') id: number): Promise<Bill> {
+    return this.billService.findBillById(id);
+  }
+
   @Delete('/:id')
   async deleteBillById(@Param('id') id: number): Promise<number> {
     return this.billService.deleteBill(id);

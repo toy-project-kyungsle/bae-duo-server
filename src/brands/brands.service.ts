@@ -20,11 +20,18 @@ export class BrandsService {
   }
 
   async findAllBrands(): Promise<Brands[]> {
-    const found = await this.brandsRepository.find();
-    if (!found) {
+    const brands = await this.brandsRepository.find();
+    if (!brands)
       throw new NotFoundException(`브랜드 리스트를 찾을 수 없습니다.`);
-    }
-    return found;
+
+    return brands;
+  }
+
+  async findBrandById(id: number): Promise<Brands> {
+    const brand = await this.brandsRepository.findOne({ where: { id } });
+    if (!brand)
+      throw new NotFoundException(`브랜드 리스트를 찾을 수 없습니다.`);
+    return brand;
   }
 
   async deleteBrand(id: number): Promise<number> {

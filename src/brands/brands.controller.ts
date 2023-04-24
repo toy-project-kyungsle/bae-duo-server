@@ -17,6 +17,11 @@ export class BrandsController {
     return this.brandsService.findAllBrands();
   }
 
+  @Get('/:id')
+  async findBrandById(@Param('id') id: number): Promise<Brands> {
+    return this.brandsService.findBrandById(id);
+  }
+
   @Delete('/:id')
   async deleteBrandById(@Param('id') id: number): Promise<number> {
     return this.brandsService.deleteBrand(id);

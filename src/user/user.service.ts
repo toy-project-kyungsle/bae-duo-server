@@ -12,18 +12,21 @@ export class UserService {
   ) {}
 
   async findAllUsers(): Promise<User[]> {
-    const found = await this.userRepository.find();
-    if (!found) {
-      throw new NotFoundException(`유저를 찾을 수 없습니다.`);
-    }
-    return found;
+    const users = await this.userRepository.find();
+    if (!users) throw new NotFoundException(`유저를 찾을 수 없습니다.`);
+    return users;
+  }
+
+  async findUserById(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) throw new NotFoundException(`유저를 찾을 수 없습니다.`);
+    return user;
   }
 
   async saveUser(sentData: CreateUserDto): Promise<User> {
     const instance = await this.userRepository.save(sentData);
-    if (!instance) {
-      throw new NotFoundException(`유저를 생성할 수 없습니다.`);
-    }
+    if (!instance) throw new NotFoundException(`유저를 생성할 수 없습니다.`);
+
     return instance;
   }
 

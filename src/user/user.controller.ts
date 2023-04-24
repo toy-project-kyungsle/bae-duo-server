@@ -12,6 +12,11 @@ export class UserController {
     return this.userService.findAllUsers();
   }
 
+  @Get('/:id')
+  async findUserById(@Param('id') id: number): Promise<User> {
+    return this.userService.findUserById(id);
+  }
+
   @Post('/')
   async createFunding(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.saveUser(createUserDto);
