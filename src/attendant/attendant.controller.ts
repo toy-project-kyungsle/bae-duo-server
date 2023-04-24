@@ -51,11 +51,8 @@ export class AttendantController {
   }
 
   // TODO patch 로직 짜기
-  @Put('/:attendantId')
-  async updateAttendant(
-    @Param('attendantId') attendantId: number,
-    @Body() sentData,
-  ): Promise<Attendant> {
+  @Put('/')
+  async updateAttendant(@Body() sentData): Promise<Attendant> {
     const menuInfos = JSON.parse(this.convertStringToJSON(sentData.menuInfo));
     return this.attendantService.updateAttendant(sentData, menuInfos);
   }
