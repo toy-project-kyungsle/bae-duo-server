@@ -9,10 +9,7 @@ export class User extends BaseEntity {
   name: string;
 
   @Column()
-  Oauth: string;
-
-  @Column()
-  session: string;
+  password: string;
 
   @Column()
   createdAt: Date;
