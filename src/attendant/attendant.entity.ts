@@ -7,16 +7,9 @@ export class Attendant extends BaseEntity {
 
   @Column()
   fundingId: number;
-
-  @Column()
   userId: number;
-
-  @Column()
   userName: string;
-
-  @Column()
   hasPaid: boolean;
-
-  @Column()
-  createdAt: Date;
+  createdAt: string;
+  menuInfo?: any;
 }

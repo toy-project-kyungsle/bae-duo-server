@@ -27,6 +27,7 @@
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^9.0.1",
+    "aws-sdk": "^2.1363.0",
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.2.0",
     "passport": "^0.6.0",
