@@ -23,6 +23,18 @@ export class UserService {
     return user;
   }
 
+  async updateUser(newUser: User): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id: newUser.id },
+    });
+    if (!user) throw new NotFoundException(`유저를 찾을 수 없습니다.`);
+    Object.keys(newUser).forEach((key) => {
+      if (key === 'id' || key === 'createdAt') return;
+      user[key] = newUser[key];
+    });
+    return user;
+  }
+
   async saveUser(sentData: CreateUserDto): Promise<User> {
     const instance = await this.userRepository.save(sentData);
     if (!instance) throw new NotFoundException(`유저를 생성할 수 없습니다.`);

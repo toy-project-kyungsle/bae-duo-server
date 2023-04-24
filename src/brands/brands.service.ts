@@ -34,6 +34,19 @@ export class BrandsService {
     return brand;
   }
 
+  async updateBrand(newBrand: Brands): Promise<Brands> {
+    const brand = await this.brandsRepository.findOne({
+      where: { id: newBrand.id },
+    });
+    if (!brand)
+      throw new NotFoundException(`브랜드 리스트를 찾을 수 없습니다.`);
+    Object.keys(newBrand).forEach((key) => {
+      if (key === 'id' || key === 'createdId' || key === 'createdAt') return;
+      brand[key] = newBrand[key];
+    });
+    return brand;
+  }
+
   async deleteBrand(id: number): Promise<number> {
     const affectedRowsCnt = (await this.brandsRepository.delete(id)).affected;
     if (affectedRowsCnt === 0)

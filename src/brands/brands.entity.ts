@@ -25,4 +25,7 @@ export class Brands extends BaseEntity {
 
   @Column()
   defaultMinPrice?: number;
+
+  @Column()
+  createdAt: string;
 }

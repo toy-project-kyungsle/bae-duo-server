@@ -1,4 +1,12 @@
-import { Controller, Get, Delete, Param, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Delete,
+  Param,
+  Post,
+  Body,
+  Put,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -20,6 +28,11 @@ export class UserController {
   @Post('/')
   async createFunding(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.saveUser(createUserDto);
+  }
+
+  @Put('/')
+  async updateUser(@Body() newUser: User): Promise<User> {
+    return this.userService.updateUser(newUser);
   }
 
   @Delete('/:id')
