@@ -19,13 +19,4 @@ export class Uploads extends BaseEntity {
 
   @Column()
   url: string;
-
-  @Column()
-  defaultDeadLine?: string;
-
-  @Column()
-  defaultMinPrice?: number;
-
-  @Column()
-  createdAt: string;
 }

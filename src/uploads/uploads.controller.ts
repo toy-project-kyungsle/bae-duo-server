@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -7,6 +8,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as AWS from 'aws-sdk';
 import { UploadsService } from './uploads.service';
+import { Uploads } from './uploads.entity';
 
 @Controller('uploads')
 export class UploadsController {
@@ -30,7 +32,7 @@ export class UploadsController {
           Body: file.buffer,
         })
         .promise();
-      console.log('FILE', file);
+
       this.uploadsService.saveUploads(file);
       return {
         result: 'success',

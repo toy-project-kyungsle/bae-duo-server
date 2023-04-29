@@ -12,6 +12,7 @@ export class UploadsService {
   ) {}
 
   async saveUploads(sentData: CreateUploadsDto): Promise<Uploads> {
+    console.log('SENT', sentData);
     const instance = await this.uploadsRepository.save(sentData);
     if (!instance) {
       throw new NotFoundException(`업로드 리스트를 생성할 수 없습니다.`);
