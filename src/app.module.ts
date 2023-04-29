@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { BrandsModule } from './brands/brands.module';
 import { AttendantMenuInfoModule } from './attendantMenuInfo/attendantMenuInfo.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AttendantMenuInfoModule } from './attendantMenuInfo/attendantMenuInfo.m
     AttendantModule,
     UserModule,
     BrandsModule,
+    UploadsModule,
     ConfigModule.forRoot({ isGlobal: true, envFilePath: `.env` }),
     TypeOrmModule.forRootAsync({
       imports: [MySqlConfigModule],
