@@ -50,6 +50,13 @@ export class AttendantController {
     return this.attendantService.findAttendantById(attendantId);
   }
 
+  @Get('/fundingId/:fundingId')
+  async findAttendantsByFundingId(
+    @Param('fundingId') fundingId: number,
+  ): Promise<AttendantType[]> {
+    return this.attendantService.findAttendantsByFundingId(fundingId);
+  }
+
   // TODO patch 로직 짜기
   @Put('/')
   async updateAttendant(

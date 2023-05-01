@@ -30,18 +30,6 @@ export class AttendantService {
     return this.getAttendantWithMenuInfo(attendant);
   }
 
-  async findAttendantByIdAndUserId(
-    attendantId: number,
-    userId: number,
-  ): Promise<AttendantType> {
-    const attendant = await this.attendantRepository.findOne({
-      where: { id: attendantId, userId },
-    });
-    if (!attendant)
-      throw new NotFoundException(`참석 정보를 찾을 수 없습니다.`);
-    return this.getAttendantWithMenuInfo(attendant);
-  }
-
   async findAllAttendants(): Promise<AttendantType[]> {
     const attendants = await this.attendantRepository.find();
     if (!attendants)
