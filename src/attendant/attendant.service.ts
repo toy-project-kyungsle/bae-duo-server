@@ -1,38 +1,80 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Attendant } from './attendant.entity';
+import { Attendant as AttendantEntity } from './attendant.entity';
 import { Repository } from 'typeorm';
 import { CreateAttendantDto } from './dto/create-attendant.dto';
 import { AttendantMenuInfo } from 'src/attendantMenuInfo/attendantMenuInfo.entity';
+import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInfo.service';
+import { AttendantType } from './attendant.type';
 
 @Injectable()
 export class AttendantService {
   constructor(
-    @InjectRepository(Attendant)
-    private attendantRepository: Repository<Attendant>,
-    @InjectRepository(AttendantMenuInfo)
-    private attendantMenuInfoRepository: Repository<AttendantMenuInfo>,
+    @InjectRepository(AttendantEntity)
+    private attendantRepository: Repository<AttendantEntity>,
+    private attendantMenuInfoService: AttendantMenuInfoService,
   ) {}
 
-  async saveAttendant(sentData: CreateAttendantDto): Promise<Attendant> {
+  async saveAttendant(sentData: CreateAttendantDto): Promise<AttendantEntity> {
     const result = await this.attendantRepository.save(sentData);
     if (!result) throw new NotFoundException(`참석 정보를 추가할 수 없습니다.`);
     return result;
   }
 
+  async findAttendantById(id: number): Promise<AttendantType> {
+    const attendant = await this.attendantRepository.findOne({
+      where: { id },
+    });
+    if (!attendant)
+      throw new NotFoundException(`참석 정보를 찾을 수 없습니다.`);
+    return this.getAttendantWithMenuInfo(attendant);
+  }
+
+  async findAttendantByIdAndUserId(
+    attendantId: number,
+    userId: number,
+  ): Promise<AttendantType> {
+    const attendant = await this.attendantRepository.findOne({
+      where: { id: attendantId, userId },
+    });
+    if (!attendant)
+      throw new NotFoundException(`참석 정보를 찾을 수 없습니다.`);
+    return this.getAttendantWithMenuInfo(attendant);
+  }
+
+  async findAllAttendants(): Promise<AttendantType[]> {
+    const attendants = await this.attendantRepository.find();
+    if (!attendants)
+      throw new NotFoundException(`참석 정보를 찾을 수 없습니다.`);
+
+    return this.getAttendantsWithMenuInfo(attendants);
+  }
+
+  async findAttendantsByFundingId(fundingId: number): Promise<AttendantType[]> {
+    const attendants = await this.attendantRepository.find({
+      where: { fundingId },
+    });
+    if (!attendants)
+      throw new NotFoundException(`참석 정보를 찾을 수 없습니다.`);
+    return this.getAttendantsWithMenuInfo(attendants);
+  }
+
   async updateAttendant(
-    newAttendant: Attendant,
+    newAttendant: AttendantEntity,
     newMenuInfos: AttendantMenuInfo[],
-  ): Promise<Attendant> {
-    const attendant: Attendant = await this.findAttendantById(newAttendant.id);
+  ): Promise<AttendantType> {
+    const attendant = await this.attendantRepository.findOne({
+      where: { id: newAttendant.id },
+    });
     if (!attendant)
       throw new NotFoundException(`참석 메뉴 정보를 찾을 수 없습니다.`);
     attendant['hasPaid'] = newAttendant['hasPaid'];
     await this.attendantRepository.save(attendant);
 
-    const menuInfos = await this.attendantMenuInfoRepository.find({
-      where: { attendantId: attendant.id },
-    });
+    const menuInfos =
+      await this.attendantMenuInfoService.findAttendantMenuInfosByAttendantId(
+        attendant.id,
+      );
 
     const insertingMenuInfos = [];
 
@@ -56,38 +98,9 @@ export class AttendantService {
       menuInfos.push(insertingMenuInfo),
     );
 
-    await this.attendantMenuInfoRepository.save(menuInfos);
+    await this.attendantMenuInfoService.saveAttendantMenuInfos(menuInfos);
 
-    return this.findAttendantWithMenuInfo(attendant);
-  }
-
-  async findAttendantById(id: number): Promise<Attendant> {
-    const attendant = await this.attendantRepository.findOne({
-      where: { id },
-    });
-    if (!attendant)
-      throw new NotFoundException(`참석 정보를 찾을 수 없습니다.`);
-    return this.findAttendantWithMenuInfo(attendant);
-  }
-
-  async findAttendantByIdAndUserId(
-    attendantId: number,
-    userId: number,
-  ): Promise<Attendant> {
-    const attendant = await this.attendantRepository.findOne({
-      where: { id: attendantId, userId },
-    });
-    if (!attendant)
-      throw new NotFoundException(`참석 정보를 찾을 수 없습니다.`);
-    return this.findAttendantWithMenuInfo(attendant);
-  }
-
-  async findAllAttendants(): Promise<Attendant[]> {
-    const attendants = await this.attendantRepository.find();
-    if (!attendants)
-      throw new NotFoundException(`참석 정보를 찾을 수 없습니다.`);
-
-    return this.findAttendantsWithMenuInfo(attendants);
+    return this.getAttendantWithMenuInfo(attendant);
   }
 
   async deleteAttendant(id: number): Promise<number> {
@@ -98,24 +111,24 @@ export class AttendantService {
     return HttpStatus.ACCEPTED;
   }
 
-  // menu Info codes
-  async findMenuInfoFromDB(attendantId: number) {
-    return await this.attendantMenuInfoRepository.find({
-      where: { attendantId },
-    });
+  // attendant에 menu info를 넣어주는 함수들
+  async getAttendantWithMenuInfo(attendant: AttendantEntity) {
+    const attendantWithMenuInfo: AttendantType = {
+      ...attendant,
+      menuInfo:
+        await this.attendantMenuInfoService.findAttendantMenuInfosByAttendantId(
+          attendant.id,
+        ),
+    };
+    return attendantWithMenuInfo;
   }
 
-  async findAttendantWithMenuInfo(attendant: Attendant) {
-    attendant['menuInfo'] = await this.findMenuInfoFromDB(attendant.id);
-    return attendant;
-  }
-
-  async findAttendantsWithMenuInfo(attendants: Attendant[]) {
-    return await Promise.all(
+  async getAttendantsWithMenuInfo(attendants: AttendantEntity[]) {
+    const attendantsWithMenuInfo: AttendantType[] = await Promise.all(
       attendants.map(async (attendant) => {
-        attendant['menuInfo'] = await this.findMenuInfoFromDB(attendant.id);
-        return attendant;
+        return this.getAttendantWithMenuInfo(attendant);
       }),
     );
+    return attendantsWithMenuInfo;
   }
 }
