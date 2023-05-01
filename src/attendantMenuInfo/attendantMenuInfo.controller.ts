@@ -17,12 +17,12 @@ export class AttendantMenuInfoController {
     return this.attendantMenuInfoService.findAllAttendantMenuInfo();
   }
 
-  @Get('/:attendantId')
+  @Get('/:attendantMenuInfoId')
   async findAttendantMenuInfosByAttendantId(
-    @Param('attendantId') attendantId: number,
-  ): Promise<attendantMenuInfoType[]> {
-    return this.attendantMenuInfoService.findAttendantMenuInfosByAttendantId(
-      attendantId,
+    @Param('attendantMenuInfoId') attendantMenuInfoId: number,
+  ): Promise<attendantMenuInfoType> {
+    return this.attendantMenuInfoService.findAttendantMenuInfosById(
+      attendantMenuInfoId,
     );
   }
 

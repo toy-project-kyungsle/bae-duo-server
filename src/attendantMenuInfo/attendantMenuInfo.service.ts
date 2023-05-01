@@ -40,6 +40,15 @@ export class AttendantMenuInfoService {
     return found;
   }
 
+  async findAttendantMenuInfosById(id: number): Promise<attendantMenuInfoType> {
+    const menuInfo = await this.attendantMenuInfoRepository.findOne({
+      where: { id },
+    });
+    if (!menuInfo)
+      throw new NotFoundException(`참석 메뉴 정보를 찾을 수 없습니다.`);
+    return menuInfo;
+  }
+
   async findAttendantMenuInfosByAttendantId(
     attendantId: number,
   ): Promise<attendantMenuInfoType[]> {
