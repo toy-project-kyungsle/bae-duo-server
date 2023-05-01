@@ -6,5 +6,10 @@ export class CreateAttendantDto {
 }
 
 export class UpdateAttendantDto {
+  id: number;
+  fundingId: number;
   userId: number;
+  userName: string;
+  hasPaid: boolean;
+  menuInfo: string;
 }

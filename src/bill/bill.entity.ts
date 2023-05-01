@@ -6,7 +6,7 @@ export class Bill extends BaseEntity {
   id: number;
 
   @Column()
-  attendants: string;
+  fundingId: number;
 
   @Column()
   minPrice: number;

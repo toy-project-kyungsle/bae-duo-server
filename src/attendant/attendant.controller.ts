@@ -8,9 +8,9 @@ import {
   Put,
 } from '@nestjs/common';
 import { AttendantService } from './attendant.service';
-import { Attendant } from './attendant.entity';
-import { CreateAttendantDto } from './dto/create-attendant.dto';
+import { CreateAttendantDto, UpdateAttendantDto } from './attendant.dto';
 import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInfo.service';
+import { AttendantType } from './attendant.type';
 
 @Controller('attendant')
 export class AttendantController {
@@ -39,22 +39,33 @@ export class AttendantController {
   }
 
   @Get('/')
-  async findAllAttendants(): Promise<Attendant[]> {
+  async findAllAttendants(): Promise<AttendantType[]> {
     return await this.attendantService.findAllAttendants();
   }
 
   @Get('/:attendantId')
   async findAttendantByUserId(
     @Param('attendantId') attendantId: number,
-  ): Promise<Attendant> {
+  ): Promise<AttendantType> {
     return this.attendantService.findAttendantById(attendantId);
+  }
+
+  @Get('/fundingId/:fundingId')
+  async findAttendantsByFundingId(
+    @Param('fundingId') fundingId: number,
+  ): Promise<AttendantType[]> {
+    return this.attendantService.findAttendantsByFundingId(fundingId);
   }
 
   // TODO patch 로직 짜기
   @Put('/')
-  async updateAttendant(@Body() sentData): Promise<Attendant> {
-    const menuInfos = JSON.parse(this.convertStringToJSON(sentData.menuInfo));
-    return this.attendantService.updateAttendant(sentData, menuInfos);
+  async updateAttendant(
+    @Body() newAttendantData: UpdateAttendantDto,
+  ): Promise<AttendantType> {
+    const menuInfos = JSON.parse(
+      this.convertStringToJSON(newAttendantData.menuInfo),
+    );
+    return this.attendantService.updateAttendant(newAttendantData, menuInfos);
   }
 
   @Delete('/:id')

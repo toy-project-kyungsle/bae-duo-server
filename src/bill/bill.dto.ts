@@ -1,5 +1,5 @@
 export class CreateBillDto {
-  attendants: string;
+  fundingId: number;
   minPrice: number;
   bankName: string;
   bankAccount: string;
