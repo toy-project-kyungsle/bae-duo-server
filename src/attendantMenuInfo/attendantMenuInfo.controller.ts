@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { AttendantMenuInfoService } from './attendantMenuInfo.service';
 import { CreateAttendantMenuInfoDto } from './dto/create-attendantMenuInfo.dto';
-import { AttendantMenuInfo } from './attendantMenuInfo.entity';
+import { attendantMenuInfoType } from './attendantMenuInfo.type';
 
 @Controller('attendantMenuInfo')
 export class AttendantMenuInfoController {
@@ -13,14 +13,14 @@ export class AttendantMenuInfoController {
   }
 
   @Get('/')
-  async findAllAttendantMenuInfo(): Promise<AttendantMenuInfo[]> {
+  async findAllAttendantMenuInfo(): Promise<attendantMenuInfoType[]> {
     return this.attendantMenuInfoService.findAllAttendantMenuInfo();
   }
 
   @Get('/:attendantId')
   async findAttendantMenuInfosByAttendantId(
     @Param('attendantId') attendantId: number,
-  ): Promise<AttendantMenuInfo[]> {
+  ): Promise<attendantMenuInfoType[]> {
     return this.attendantMenuInfoService.findAttendantMenuInfosByAttendantId(
       attendantId,
     );

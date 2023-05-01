@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AttendantMenuInfo } from './attendantMenuInfo.entity';
+import { AttendantMenuInfoEntity } from './attendantMenuInfo.entity';
 import { Repository } from 'typeorm';
 import { CreateAttendantMenuInfoDto } from './dto/create-attendantMenuInfo.dto';
 import { attendantMenuInfoType } from './attendantMenuInfo.type';
@@ -8,8 +8,8 @@ import { attendantMenuInfoType } from './attendantMenuInfo.type';
 @Injectable()
 export class AttendantMenuInfoService {
   constructor(
-    @InjectRepository(AttendantMenuInfo)
-    private attendantMenuInfoRepository: Repository<AttendantMenuInfo>,
+    @InjectRepository(AttendantMenuInfoEntity)
+    private attendantMenuInfoRepository: Repository<AttendantMenuInfoEntity>,
   ) {}
 
   async saveAttendantMenuInfo(

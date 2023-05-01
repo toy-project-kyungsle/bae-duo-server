@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Attendant as AttendantEntity } from './attendant.entity';
+import { AttendantEntity } from './attendant.entity';
 import { Repository } from 'typeorm';
 import { CreateAttendantDto } from './dto/create-attendant.dto';
 import { AttendantMenuInfo } from 'src/attendantMenuInfo/attendantMenuInfo.entity';
