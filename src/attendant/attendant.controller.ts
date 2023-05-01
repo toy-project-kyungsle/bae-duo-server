@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { AttendantService } from './attendant.service';
-import { CreateAttendantDto } from './dto/create-attendant.dto';
+import { CreateAttendantDto, UpdateAttendantDto } from './attendant.dto';
 import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInfo.service';
 import { AttendantType } from './attendant.type';
 
@@ -52,9 +52,13 @@ export class AttendantController {
 
   // TODO patch 로직 짜기
   @Put('/')
-  async updateAttendant(@Body() sentData): Promise<AttendantType> {
-    const menuInfos = JSON.parse(this.convertStringToJSON(sentData.menuInfo));
-    return this.attendantService.updateAttendant(sentData, menuInfos);
+  async updateAttendant(
+    @Body() newAttendantData: UpdateAttendantDto,
+  ): Promise<AttendantType> {
+    const menuInfos = JSON.parse(
+      this.convertStringToJSON(newAttendantData.menuInfo),
+    );
+    return this.attendantService.updateAttendant(newAttendantData, menuInfos);
   }
 
   @Delete('/:id')

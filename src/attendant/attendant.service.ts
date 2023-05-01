@@ -1,11 +1,11 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AttendantEntity } from './attendant.entity';
+import { Attendant as AttendantEntity } from './attendant.entity';
 import { Repository } from 'typeorm';
-import { CreateAttendantDto } from './dto/create-attendant.dto';
-import { AttendantMenuInfo } from 'src/attendantMenuInfo/attendantMenuInfo.entity';
+import { CreateAttendantDto, UpdateAttendantDto } from './attendant.dto';
 import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInfo.service';
 import { AttendantType } from './attendant.type';
+import { attendantMenuInfoType } from 'src/attendantMenuInfo/attendantMenuInfo.type';
 
 @Injectable()
 export class AttendantService {
@@ -60,8 +60,8 @@ export class AttendantService {
   }
 
   async updateAttendant(
-    newAttendant: AttendantEntity,
-    newMenuInfos: AttendantMenuInfo[],
+    newAttendant: UpdateAttendantDto,
+    newMenuInfos: attendantMenuInfoType[],
   ): Promise<AttendantType> {
     const attendant = await this.attendantRepository.findOne({
       where: { id: newAttendant.id },

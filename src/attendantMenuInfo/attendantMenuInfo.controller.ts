@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { AttendantMenuInfoService } from './attendantMenuInfo.service';
-import { CreateAttendantMenuInfoDto } from './dto/create-attendantMenuInfo.dto';
+import { CreateAttendantMenuInfoDto } from './attendantMenuInfo.dto';
 import { attendantMenuInfoType } from './attendantMenuInfo.type';
 
 @Controller('attendantMenuInfo')

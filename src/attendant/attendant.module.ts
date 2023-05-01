@@ -2,15 +2,15 @@ import { Module } from '@nestjs/common';
 import { AttendantController } from './attendant.controller';
 import { AttendantService } from './attendant.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Attendant } from './attendant.entity';
+import { Attendant as AttendantEntity } from './attendant.entity';
 import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInfo.service';
 import { AttendantMenuInfoController } from 'src/attendantMenuInfo/attendantMenuInfo.controller';
-import { AttendantMenuInfo } from 'src/attendantMenuInfo/attendantMenuInfo.entity';
+import { AttendantMenuInfo as AttendantMenuInfoEntity } from 'src/attendantMenuInfo/attendantMenuInfo.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Attendant]),
-    TypeOrmModule.forFeature([AttendantMenuInfo]),
+    TypeOrmModule.forFeature([AttendantEntity]),
+    TypeOrmModule.forFeature([AttendantMenuInfoEntity]),
   ],
   controllers: [AttendantController, AttendantMenuInfoController],
   providers: [AttendantService, AttendantMenuInfoService],

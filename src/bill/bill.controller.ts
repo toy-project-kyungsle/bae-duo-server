@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Delete, Param } from '@nestjs/common';
 import { BillService } from './bill.service';
-import { CreateBillDto } from './dto/create-bill.dto';
+import { CreateBillDto } from './bill.dto';
 import { billType } from './biil.type';
 
 @Controller('bill')

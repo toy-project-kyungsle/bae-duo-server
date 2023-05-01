@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { BillController } from './bill.controller';
 import { BillService } from './bill.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Bill } from './bill.entity';
+import { Bill as BillEntity } from './bill.entity';
 import { AttendantModule } from 'src/attendant/attendant.module';
-import { AttendantMenuInfo } from 'src/attendantMenuInfo/attendantMenuInfo.entity';
-import { Attendant } from 'src/attendant/attendant.entity';
+import { AttendantMenuInfo as AttendantMenuInfoEntity } from 'src/attendantMenuInfo/attendantMenuInfo.entity';
+import { Attendant as AttendantEntity } from 'src/attendant/attendant.entity';
 import { AttendantController } from 'src/attendant/attendant.controller';
 import { AttendantMenuInfoController } from 'src/attendantMenuInfo/attendantMenuInfo.controller';
 import { AttendantService } from 'src/attendant/attendant.service';
@@ -14,7 +14,11 @@ import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInf
 @Module({
   imports: [
     AttendantModule,
-    TypeOrmModule.forFeature([Bill, Attendant, AttendantMenuInfo]),
+    TypeOrmModule.forFeature([
+      BillEntity,
+      AttendantEntity,
+      AttendantMenuInfoEntity,
+    ]),
   ],
   controllers: [
     BillController,

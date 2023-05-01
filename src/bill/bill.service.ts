@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BillEntity } from './bill.entity';
-import { CreateBillDto } from './dto/create-bill.dto';
+import { Bill as BillEntity } from './bill.entity';
+import { CreateBillDto } from './bill.dto';
 import { Repository } from 'typeorm';
 import { billType, priceInfoType } from './biil.type';
 import { AttendantService } from 'src/attendant/attendant.service';
