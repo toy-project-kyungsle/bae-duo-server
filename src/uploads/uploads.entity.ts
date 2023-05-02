@@ -5,6 +5,9 @@ export class Uploads extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+@Column()
+  createdId: number;
+
   @Column()
   uuid: string;
 

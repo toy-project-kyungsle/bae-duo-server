@@ -28,7 +28,7 @@ export class BrandsService {
   }
 
   async findBrandById(id: number): Promise<Brands> {
-    const brand = await this.brandsRepository.findOne({ where: { id } });
+    const brand = await this.brandsRepository.findOne({ where: { id },relations: ['upload'] } );
     if (!brand)
       throw new NotFoundException(`브랜드 리스트를 찾을 수 없습니다.`);
     return brand;

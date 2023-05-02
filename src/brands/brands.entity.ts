@@ -29,3 +29,11 @@ export class Brands extends BaseEntity {
   @Column()
   createdAt: string;
 }
+
+class Upload extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+  createdId: number;
+}
