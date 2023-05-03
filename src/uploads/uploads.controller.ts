@@ -9,6 +9,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import * as AWS from 'aws-sdk';
 import { UploadsService } from './uploads.service';
 import { Uploads } from './uploads.entity';
+import message from "aws-sdk/lib/maintenance_mode_message.js";
+message.suppress = true;
 
 @Controller('uploads')
 export class UploadsController {
