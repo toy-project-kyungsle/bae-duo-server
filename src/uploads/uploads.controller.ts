@@ -10,6 +10,7 @@ import * as AWS from 'aws-sdk';
 import { UploadsService } from './uploads.service';
 import { Uploads } from './uploads.entity';
 
+const s3 = new AWS.S3({ useAccelerateEndpoint: true });
 
 @Controller('uploads')
 export class UploadsController {
@@ -26,14 +27,17 @@ export class UploadsController {
       },
     });
     try {
-      await new AWS.S3()
-        .putObject({
-          Bucket: process.env.BUCKET_NAME,
-          Key: `${Date.now() + file.originalname}`,
-          Body: file.buffer,
-        })
-        .promise();
+      const params = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: `${Date.now() + file.originalname}`,
+        Body: file.buffer,
+        ACL: 'public-read',
+      };
+      await new AWS.S3().putObject(params).promise();
 
+      const s3Url = await s3.getSignedUrlPromise('putObject', params);
+
+      file.url = s3Url;
       this.uploadsService.saveUploads(file);
       return {
         result: 'success',

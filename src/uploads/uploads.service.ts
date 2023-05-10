@@ -22,8 +22,7 @@ export class UploadsService {
 
   async findUploadsById(name: string): Promise<Uploads> {
     const upload = await this.uploadsRepository.findOne({ where: { name } });
-    if (!upload)
-      throw new NotFoundException(`브랜드 리스트를 찾을 수 없습니다.`);
+    if (!upload) throw new NotFoundException(`업로드 파일을 찾을 수 없습니다.`);
     return upload;
   }
 }
