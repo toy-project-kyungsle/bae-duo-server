@@ -26,17 +26,18 @@ export class UserController {
   }
 
   @Post('/')
-  async createFunding(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.userService.saveUser(createUserDto);
+  async findUser(
+    @Body('name') name: string,
+    @Body('password') password: string,
+  ) {
+    return this.userService.findUser(name, password);
   }
 
-  @Put('/')
-  async updateUser(@Body() newUser: User): Promise<User> {
-    return this.userService.updateUser(newUser);
-  }
-
-  @Delete('/:id')
-  async deleteUserById(@Param('id') id: number): Promise<number> {
-    return this.userService.deleteUser(id);
+  @Post('/add')
+  async createUser(
+    @Body('name') name: string,
+    @Body('password') password: string,
+  ) {
+    return this.userService.createUser(name, password);
   }
 }

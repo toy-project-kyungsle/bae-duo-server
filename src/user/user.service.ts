@@ -23,6 +23,28 @@ export class UserService {
     return user;
   }
 
+  async findUser(name: string, password: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: {
+        name: name,
+        password: password,
+      },
+    });
+    if (!user) throw new NotFoundException(`유저를 찾을 수 없습니다.`);
+    return user;
+  }
+
+  async createUser(name: string, password: string): Promise<User> {
+    const instance = await this.userRepository.save({
+      name,
+      password,
+      createdAt: new Date(),
+    });
+    if (!instance) throw new NotFoundException(`유저를 생성할 수 없습니다.`);
+
+    return instance;
+  }
+
   async updateUser(newUser: User): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id: newUser.id },
@@ -33,13 +55,6 @@ export class UserService {
       user[key] = newUser[key];
     });
     return user;
-  }
-
-  async saveUser(sentData: CreateUserDto): Promise<User> {
-    const instance = await this.userRepository.save(sentData);
-    if (!instance) throw new NotFoundException(`유저를 생성할 수 없습니다.`);
-
-    return instance;
   }
 
   async deleteUser(id: number): Promise<number> {
