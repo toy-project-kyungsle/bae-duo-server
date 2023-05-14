@@ -6,18 +6,23 @@ import {
   Delete,
   Param,
   Put,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { BrandsService } from './brands.service';
 import { Brands } from './brands.entity';
 import { CreateBrandsDto } from './dto/create-brand.dto';
+import { UpdateBrandsDto } from './dto/update-brand.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('brands')
 export class BrandsController {
   constructor(private brandsService: BrandsService) {}
 
   @Post()
-  async saveBrand(@Body() sentData: CreateBrandsDto) {
-    return this.brandsService.saveBrand(sentData);
+  @UseInterceptors(FileInterceptor('file'))
+  async saveBrand(@UploadedFile() file, @Body() sentData: CreateBrandsDto) {
+    return this.brandsService.saveBrand(sentData, file);
   }
 
   @Get('/')
@@ -30,9 +35,14 @@ export class BrandsController {
     return this.brandsService.findBrandById(id);
   }
 
-  @Put('/')
-  async updateBrand(@Body() newBrand: Brands): Promise<Brands> {
-    return this.brandsService.updateBrand(newBrand);
+  @Put('/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  async updateBrand(
+    @UploadedFile() file,
+    @Param('id') id: number,
+    @Body() newBrand: UpdateBrandsDto,
+  ): Promise<Brands> {
+    return this.brandsService.updateBrand(id, newBrand, file);
   }
 
   @Delete('/:id')
