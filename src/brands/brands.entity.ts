@@ -31,9 +31,9 @@ export class Brands extends BaseEntity {
 }
 
 class Upload extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
+  @Column()
   createdId: number;
 }

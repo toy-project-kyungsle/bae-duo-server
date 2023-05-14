@@ -31,6 +31,7 @@ export class UploadsController {
         Bucket: process.env.BUCKET_NAME,
         Key: `${Date.now() + file.originalname}`,
         Body: file.buffer,
+        ContentType: 'image/jpeg',
         ACL: 'public-read',
       };
       await new AWS.S3().putObject(params).promise();
@@ -38,6 +39,7 @@ export class UploadsController {
       const s3Url = await s3.getSignedUrlPromise('putObject', params);
 
       file.url = s3Url;
+      file.createdId = `${Date.now() + file.originalname}`;
       this.uploadsService.saveUploads(file);
       return {
         result: 'success',
