@@ -6,7 +6,7 @@ export class Brands extends BaseEntity {
   id: number;
 
   @Column()
-  createdId: number;
+  createduserId: number;
 
   @Column()
   name: string;
@@ -18,13 +18,16 @@ export class Brands extends BaseEntity {
   orderCnt: number;
 
   @Column()
-  menuImage: string;
+  brandImage: string;
 
   @Column()
   defaultDeadLine?: string;
 
   @Column()
   defaultMinPrice?: number;
+
+  @Column()
+  defaultMinMember?: number;
 
   @Column()
   createdAt: string;
