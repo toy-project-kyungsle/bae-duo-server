@@ -10,6 +10,9 @@ import { AttendantController } from 'src/attendant/attendant.controller';
 import { AttendantMenuInfoController } from 'src/attendantMenuInfo/attendantMenuInfo.controller';
 import { AttendantService } from 'src/attendant/attendant.service';
 import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInfo.service';
+import { Funding as FundingEntity } from 'src/funding/funding.entity';
+import { FundingController } from 'src/funding/funding.controller';
+import { FundingService } from 'src/funding/funding.service';
 
 @Module({
   imports: [
@@ -18,13 +21,20 @@ import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInf
       BillEntity,
       AttendantEntity,
       AttendantMenuInfoEntity,
+      FundingEntity,
     ]),
   ],
   controllers: [
     BillController,
     AttendantController,
     AttendantMenuInfoController,
+    FundingController,
   ],
-  providers: [BillService, AttendantService, AttendantMenuInfoService],
+  providers: [
+    BillService,
+    AttendantService,
+    AttendantMenuInfoService,
+    FundingService,
+  ],
 })
 export class BillModule {}

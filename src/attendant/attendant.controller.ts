@@ -7,16 +7,18 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { AttendantService } from './attendant.service';
 import { CreateAttendantDto, UpdateAttendantDto } from './attendant.dto';
-import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInfo.service';
+import { AttendantService } from './attendant.service';
 import { AttendantType } from './attendant.type';
+import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInfo.service';
+import { FundingService } from 'src/funding/funding.service';
 
 @Controller('attendant')
 export class AttendantController {
   constructor(
     private attendantService: AttendantService,
     private attendantMenuInfoService: AttendantMenuInfoService,
+    private fundingService: FundingService,
   ) {}
 
   convertStringToJSON = (string: string) => {
@@ -27,11 +29,19 @@ export class AttendantController {
   @Post()
   async saveAttendant(@Body() sentData: CreateAttendantDto) {
     const menuInfos = JSON.parse(this.convertStringToJSON(sentData.menuInfo));
+    const targetFunding = await this.fundingService.findFundingById(
+      sentData.fundingId,
+    );
     const result = await this.attendantService.saveAttendant(sentData);
+    targetFunding['curMember'] += 1;
     menuInfos.forEach((menuInfo) => {
       menuInfo['attendantId'] = result.id;
       menuInfo['userId'] = result.userId;
+      targetFunding['curPrice'] += menuInfo.menuPrice;
     });
+    const putTargetFunding = await this.fundingService.updateFunding(
+      targetFunding,
+    );
     const createdMenuInfo =
       await this.attendantMenuInfoService.saveAttendantMenuInfo(menuInfos);
     result['menuInfo'] = createdMenuInfo;
