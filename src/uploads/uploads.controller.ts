@@ -21,10 +21,8 @@ export class UploadsController {
   async uploadFile(@UploadedFile() file) {
     AWS.config.update({
       region: 'ap-northeast-2',
-      credentials: {
-        accessKeyId: process.env.IAMAccess,
-        secretAccessKey: process.env.IAMSecret,
-      },
+      accessKeyId: process.env.IAMAccess,
+      secretAccessKey: process.env.IAMSecret,
     });
     try {
       const params = {
@@ -41,11 +39,10 @@ export class UploadsController {
         createdId: `${Date.now() + file.originalname}`,
         name: file.originalname,
         extension: file.mimetype,
-        size: file.size,
         url: s3Url,
       };
-      console.log('files', files);
-      this.uploadsService.saveUploads(files);
+      console.log('files', file);
+      this.uploadsService.saveUploads(file);
       return file.originalname;
     } catch (error) {
       console.error('ERROR : ', error);
