@@ -72,9 +72,33 @@ export class AttendantController {
   async updateAttendant(
     @Body() newAttendantData: UpdateAttendantDto,
   ): Promise<AttendantType> {
+    const targetFunding = await this.fundingService.findFundingById(
+      newAttendantData.fundingId,
+    );
+    const targetIds = [];
     const menuInfos = JSON.parse(
       this.convertStringToJSON(newAttendantData.menuInfo),
     );
+    menuInfos.forEach((menuInfo) => {
+      targetIds.push(menuInfo.id);
+    });
+    const originMenuInfos =
+      await this.attendantMenuInfoService.findAttendantMenuInfosByIds(
+        targetIds,
+      );
+
+    // 기존 메뉴 가격을 빼고 새로운 가격으로 펀딩을 채우기
+    originMenuInfos.forEach((originMenuInfo) => {
+      targetFunding['curPrice'] -= originMenuInfo.menuPrice;
+    });
+    menuInfos.forEach((menuInfo) => {
+      targetFunding['curPrice'] += menuInfo.menuPrice;
+    });
+
+    const putTargetFunding = await this.fundingService.updateFunding(
+      targetFunding,
+    );
+
     return this.attendantService.updateAttendant(newAttendantData, menuInfos);
   }
 
