@@ -25,9 +25,10 @@ export class UploadsController {
       secretAccessKey: process.env.IAMSecret,
     });
     try {
+      const key = `${Date.now() + file.originalname}`;
       const params = {
         Bucket: process.env.BUCKET_NAME,
-        Key: `${Date.now() + file.originalname}`,
+        Key: key,
         Body: file.buffer,
         ContentType: 'image/jpeg',
         ACL: 'public-read',
@@ -35,13 +36,11 @@ export class UploadsController {
       await new AWS.S3().putObject(params).promise();
 
       const files = {
-        createdId: `${Date.now() + file.originalname}`,
+        createdId: key,
         name: file.originalname,
         extension: file.mimetype,
         size: file.size,
-        url: `https://baeduo.s3.ap-northeast-2.amazonaws.com/${
-          Date.now() + file.originalname
-        }`,
+        url: `https://baeduo.s3.ap-northeast-2.amazonaws.com/${key}`,
       };
       console.log('files', file);
       this.uploadsService.saveUploads(files);
