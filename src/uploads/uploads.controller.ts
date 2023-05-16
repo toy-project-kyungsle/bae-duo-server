@@ -34,17 +34,14 @@ export class UploadsController {
       };
       await new AWS.S3().putObject(params).promise();
 
-      const s3Url = await new AWS.S3().getSignedUrl('putObject', {
-        Bucket: process.env.BUCKET_NAME,
-        Key: `${Date.now() + file.originalname}`,
-        ContentType: 'image/jpeg',
-      });
       const files = {
         createdId: `${Date.now() + file.originalname}`,
         name: file.originalname,
         extension: file.mimetype,
         size: file.size,
-        url: s3Url,
+        url: `https://baeduo.s3.ap-northeast-2.amazonaws.com/${
+          Date.now() + file.originalname
+        }`,
       };
       console.log('files', file);
       this.uploadsService.saveUploads(files);
