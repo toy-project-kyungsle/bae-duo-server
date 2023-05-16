@@ -9,9 +9,6 @@ export class Uploads extends BaseEntity {
   createdId: string;
 
   @Column()
-  uuid: string;
-
-  @Column()
   name: string;
 
   @Column()
