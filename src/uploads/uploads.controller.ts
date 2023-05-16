@@ -10,7 +10,7 @@ import * as AWS from 'aws-sdk';
 import { UploadsService } from './uploads.service';
 import { Uploads } from './uploads.entity';
 
-const s3 = new AWS.S3({ useAccelerateEndpoint: true });
+//const s3 = new AWS.S3({ useAccelerateEndpoint: true });
 
 @Controller('uploads')
 export class UploadsController {
@@ -34,15 +34,16 @@ export class UploadsController {
       };
       await new AWS.S3().putObject(params).promise();
 
-      const s3Url = await s3.getSignedUrlPromise('putObject', params);
+      //const s3Url = await s3.getSignedUrlPromise('putObject', params);
       const files = {
         createdId: `${Date.now() + file.originalname}`,
         name: file.originalname,
         extension: file.mimetype,
-        url: s3Url,
+        size: file.size,
+        url: 'example.com',
       };
       console.log('files', file);
-      this.uploadsService.saveUploads(file);
+      this.uploadsService.saveUploads(files);
       return file.originalname;
     } catch (error) {
       console.error('ERROR : ', error);
