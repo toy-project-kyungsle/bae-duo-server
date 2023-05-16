@@ -2,7 +2,7 @@ import { HttpStatus, NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Uploads } from './uploads.entity';
 import { Repository } from 'typeorm';
-import { CreateUploadsDto } from './dto/create-uploads.dto';
+import { CreateUploadsDto } from '../brands/dto/create-uploads.dto';
 
 @Injectable()
 export class UploadsService {
