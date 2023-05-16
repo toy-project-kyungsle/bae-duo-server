@@ -55,7 +55,7 @@ export class AttendantService {
       where: { id: newAttendant.id },
     });
     if (!attendant)
-      throw new NotFoundException(`참석 메뉴 정보를 찾을 수 없습니다.`);
+      throw new NotFoundException(`참석 정보를 찾을 수 없습니다.`);
     attendant['hasPaid'] = newAttendant['hasPaid'];
     await this.attendantRepository.save(attendant);
 
