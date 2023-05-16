@@ -103,7 +103,25 @@ export class AttendantController {
   }
 
   @Delete('/:id')
-  deleteAttendantById(@Param('id') id: number): Promise<number> {
+  async deleteAttendantById(@Param('id') id: number): Promise<number> {
+    const targetAttendantInfo = await this.attendantService.findAttendantById(
+      id,
+    );
+    const targetFunding = await this.fundingService.findFundingById(
+      targetAttendantInfo.fundingId,
+    );
+    const targetMenuInfos =
+      await this.attendantMenuInfoService.findAttendantMenuInfosByAttendantId(
+        id,
+      );
+
+    // 삭제하려는 메뉴의 가격로 funding의 curprice 낮추기
+    targetMenuInfos.forEach((targetMenuInfo) => {
+      targetFunding['curPrice'] -= targetMenuInfo.menuPrice;
+    });
+    const putTargetFunding = await this.fundingService.updateFunding(
+      targetFunding,
+    );
     return this.attendantService.deleteAttendant(id);
   }
 }
