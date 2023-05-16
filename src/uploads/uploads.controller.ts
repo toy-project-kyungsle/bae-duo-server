@@ -34,13 +34,13 @@ export class UploadsController {
       };
       await new AWS.S3().putObject(params).promise();
 
-      //const s3Url = await s3.getSignedUrlPromise('putObject', params);
+      const s3Url = await new AWS.S3().getSignedUrlPromise('putObject', params);
       const files = {
         createdId: `${Date.now() + file.originalname}`,
         name: file.originalname,
         extension: file.mimetype,
         size: file.size,
-        url: 'example.com',
+        url: s3Url,
       };
       console.log('files', file);
       this.uploadsService.saveUploads(files);
