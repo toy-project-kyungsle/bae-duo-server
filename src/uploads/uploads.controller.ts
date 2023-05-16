@@ -37,11 +37,15 @@ export class UploadsController {
       await new AWS.S3().putObject(params).promise();
 
       const s3Url = await s3.getSignedUrlPromise('putObject', params);
-
-      file.url = s3Url;
-      file.createdId = `${Date.now() + file.originalname}`;
-      console.log('files', file);
-      this.uploadsService.saveUploads(file);
+      const files = {
+        createdId: `${Date.now() + file.originalname}`,
+        name: file.originalname,
+        extension: file.mimetype,
+        size: file.size,
+        url: s3Url,
+      };
+      console.log('files', files);
+      this.uploadsService.saveUploads(files);
       return file.originalname;
     } catch (error) {
       console.error('ERROR : ', error);

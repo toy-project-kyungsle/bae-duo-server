@@ -1,8 +1,7 @@
 export class CreateUploadsDto {
-  fieldname: string;
   createdId: string;
-  originalname: string;
-  mimetype: string;
+  name: string;
+  extension: string;
   size: number;
   url: string;
 }
