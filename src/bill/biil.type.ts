@@ -8,7 +8,7 @@ export interface priceInfoType {
 export interface billType {
   id: number;
   fundingId: number;
-  minPrice: number;
+  totalPrice: number;
   bankName: string;
   bankAccount: string;
   deliveryFee: number;

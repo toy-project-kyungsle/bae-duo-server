@@ -9,7 +9,7 @@ export class Bill extends BaseEntity {
   fundingId: number;
 
   @Column()
-  minPrice: number;
+  totalPrice: number;
 
   @Column()
   bankName: string;

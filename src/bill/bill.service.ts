@@ -41,7 +41,7 @@ export class BillService {
   async findBillById(id: number): Promise<billType> {
     const bill = await this.billRepository.findOne({ where: { id } });
     const attendants = await this.attendantService.findAttendantsByFundingId(
-      id,
+      bill.fundingId,
     );
     const billWithPriceInfo: billType = {
       ...bill,
