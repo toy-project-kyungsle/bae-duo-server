@@ -1,6 +1,6 @@
 export class CreateBillDto {
   fundingId: number;
-  minPrice: number;
+  totalPrice: number;
   bankName: string;
   bankAccount: string;
   deliveryFee: number;

@@ -52,11 +52,14 @@ export class AttendantMenuInfoService {
   async findAttendantMenuInfosByIds(
     idArr: number[],
   ): Promise<attendantMenuInfoType[]> {
-    const menuInfos = Promise.all(
+    const fetchedMenuInfos = Promise.all(
       idArr.map(async (id) => {
-        return this.findAttendantMenuInfosById(id);
+        return this.attendantMenuInfoRepository.findOne({
+          where: { id },
+        });
       }),
     );
+    const menuInfos = (await fetchedMenuInfos).filter((menuInfo) => menuInfo);
 
     if (!menuInfos)
       throw new NotFoundException(`참석 메뉴 정보를 찾을 수 없습니다.`);
