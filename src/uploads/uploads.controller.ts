@@ -34,7 +34,11 @@ export class UploadsController {
       };
       await new AWS.S3().putObject(params).promise();
 
-      const s3Url = await new AWS.S3().getSignedUrlPromise('putObject', params);
+      const s3Url = await new AWS.S3().getSignedUrl('putObject', {
+        Bucket: process.env.BUCKET_NAME,
+        Key: `${Date.now() + file.originalname}`,
+        ContentType: 'image/jpeg',
+      });
       const files = {
         createdId: `${Date.now() + file.originalname}`,
         name: file.originalname,
