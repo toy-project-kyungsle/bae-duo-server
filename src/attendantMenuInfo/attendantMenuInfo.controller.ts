@@ -47,6 +47,7 @@ export class AttendantMenuInfoController {
     targetFunding['curPrice'] -= targetMunuInfo.menuPrice;
 
     const putTargetFunding = await this.fundingService.updateFunding(
+      targetFunding.id,
       targetFunding,
     );
 

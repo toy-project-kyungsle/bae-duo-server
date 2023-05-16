@@ -10,18 +10,28 @@ import { FundingController } from 'src/funding/funding.controller';
 import { AttendantService } from './attendant.service';
 import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInfo.service';
 import { FundingService } from 'src/funding/funding.service';
+import { Brands as BrandsEntity } from 'src/brands/brands.entity';
+import { BrandsController } from 'src/brands/brands.controller';
+import { BrandsService } from 'src/brands/brands.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([AttendantEntity]),
     TypeOrmModule.forFeature([AttendantMenuInfoEntity]),
     TypeOrmModule.forFeature([FundingEntity]),
+    TypeOrmModule.forFeature([BrandsEntity]),
   ],
   controllers: [
     AttendantController,
     AttendantMenuInfoController,
     FundingController,
+    BrandsController,
   ],
-  providers: [AttendantService, AttendantMenuInfoService, FundingService],
+  providers: [
+    AttendantService,
+    AttendantMenuInfoService,
+    FundingService,
+    BrandsService,
+  ],
 })
 export class AttendantModule {}

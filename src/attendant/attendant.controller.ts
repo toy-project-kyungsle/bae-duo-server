@@ -40,6 +40,7 @@ export class AttendantController {
       targetFunding['curPrice'] += menuInfo.menuPrice;
     });
     const putTargetFunding = await this.fundingService.updateFunding(
+      targetFunding.id,
       targetFunding,
     );
     const createdMenuInfo =
@@ -96,6 +97,7 @@ export class AttendantController {
     });
 
     const putTargetFunding = await this.fundingService.updateFunding(
+      targetFunding.id,
       targetFunding,
     );
 
@@ -120,6 +122,7 @@ export class AttendantController {
       targetFunding['curPrice'] -= targetMenuInfo.menuPrice;
     });
     const putTargetFunding = await this.fundingService.updateFunding(
+      targetFunding.id,
       targetFunding,
     );
     return this.attendantService.deleteAttendant(id);
