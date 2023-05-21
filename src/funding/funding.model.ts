@@ -1,5 +1,5 @@
 export enum FundingStatus {
-  DEFAULT = 0,
-  DONE = 1,
-  ING = 2,
+  ING = 1,
+  SUCCESS = 2,
+  FAIL = 3,
 }
