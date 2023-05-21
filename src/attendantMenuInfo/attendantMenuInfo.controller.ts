@@ -27,7 +27,7 @@ export class AttendantMenuInfoController {
   async findAttendantMenuInfosByAttendantId(
     @Param('attendantMenuInfoId') attendantMenuInfoId: number,
   ): Promise<attendantMenuInfoType> {
-    return this.attendantMenuInfoService.findAttendantMenuInfosById(
+    return this.attendantMenuInfoService.findAttendantMenuInfoById(
       attendantMenuInfoId,
     );
   }
@@ -35,22 +35,48 @@ export class AttendantMenuInfoController {
   @Delete('/:id')
   async deleteAttendantMenuInfoById(@Param('id') id: number): Promise<number> {
     const targetMunuInfo =
-      await this.attendantMenuInfoService.findAttendantMenuInfosById(id);
+      await this.attendantMenuInfoService.findAttendantMenuInfoById(id);
+    const menuInfosByAttendantId =
+      await this.attendantMenuInfoService.findAttendantMenuInfosByAttendantId(
+        targetMunuInfo.attendantId,
+      );
     const targetAttendant = await this.attendantService.findAttendantById(
       targetMunuInfo.attendantId,
     );
-    const targetFunding = await this.fundingService.findFundingById(
+
+    await this.lowerFundingPrice(
       targetAttendant.fundingId,
+      targetMunuInfo.menuPrice,
     );
 
-    // menu의 가격에 맞게 funding의 curPrice를 낮추어줌
-    targetFunding['curPrice'] -= targetMunuInfo.menuPrice;
+    await this.deleteAttendantIfNeeded(
+      menuInfosByAttendantId,
+      targetMunuInfo.id,
+      targetAttendant.id,
+    );
+
+    return this.attendantMenuInfoService.deleteAttendantMenuInfoById(id);
+  }
+
+  // menu의 가격에 맞게 funding의 curPrice를 낮추어줌
+  async lowerFundingPrice(fundingId: number, menuPrice: number) {
+    const targetFunding = await this.fundingService.findFundingById(fundingId);
+
+    targetFunding['curPrice'] -= menuPrice;
 
     const putTargetFunding = await this.fundingService.updateFunding(
       targetFunding.id,
       targetFunding,
     );
+  }
 
-    return this.attendantMenuInfoService.deleteAttendantMenuInfoById(id);
+  // attendant ID를 가진 메뉴 인포들을 가져왔는데, 한 개이며 id가 같은 경우 삭제해야 함
+  async deleteAttendantIfNeeded(
+    menuInfos: attendantMenuInfoType[],
+    menuInfoId: number,
+    attendantId: number,
+  ) {
+    if (menuInfos.length === 1 && menuInfos[0].id === menuInfoId)
+      await this.attendantService.deleteAttendant(attendantId);
   }
 }

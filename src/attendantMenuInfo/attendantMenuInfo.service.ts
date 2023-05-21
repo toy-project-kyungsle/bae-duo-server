@@ -40,7 +40,7 @@ export class AttendantMenuInfoService {
     return found;
   }
 
-  async findAttendantMenuInfosById(id: number): Promise<attendantMenuInfoType> {
+  async findAttendantMenuInfoById(id: number): Promise<attendantMenuInfoType> {
     const menuInfo = await this.attendantMenuInfoRepository.findOne({
       where: { id },
     });
