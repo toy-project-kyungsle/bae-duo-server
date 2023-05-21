@@ -12,6 +12,8 @@ import { AttendantService } from './attendant.service';
 import { AttendantType } from './attendant.type';
 import { AttendantMenuInfoService } from 'src/attendantMenuInfo/attendantMenuInfo.service';
 import { FundingService } from 'src/funding/funding.service';
+import { attendantMenuInfoType } from 'src/attendantMenuInfo/attendantMenuInfo.type';
+import { CreateAttendantMenuInfoDto } from 'src/attendantMenuInfo/attendantMenuInfo.dto';
 
 @Controller('attendant')
 export class AttendantController {
@@ -28,7 +30,9 @@ export class AttendantController {
 
   @Post()
   async saveAttendant(@Body() sentData: CreateAttendantDto) {
-    const menuInfos = JSON.parse(this.convertStringToJSON(sentData.menuInfo));
+    const menuInfos: CreateAttendantMenuInfoDto[] = JSON.parse(
+      this.convertStringToJSON(sentData.menuInfo),
+    );
     const targetFunding = await this.fundingService.findFundingById(
       sentData.fundingId,
     );
@@ -37,14 +41,14 @@ export class AttendantController {
     menuInfos.forEach((menuInfo) => {
       menuInfo['attendantId'] = result.id;
       menuInfo['userId'] = result.userId;
-      targetFunding['curPrice'] += menuInfo.menuPrice;
+      targetFunding['curPrice'] += menuInfo.menuPrice * menuInfo.count;
     });
     const putTargetFunding = await this.fundingService.updateFunding(
       targetFunding.id,
       targetFunding,
     );
     const createdMenuInfo =
-      await this.attendantMenuInfoService.saveAttendantMenuInfo(menuInfos);
+      await this.attendantMenuInfoService.saveAttendantMenuInfos(menuInfos);
     result['menuInfo'] = createdMenuInfo;
     return result;
   }
@@ -75,27 +79,12 @@ export class AttendantController {
     const targetFunding = await this.fundingService.findFundingById(
       newAttendantData.fundingId,
     );
-    const menuInfos = JSON.parse(
+    const menuInfos: attendantMenuInfoType[] = JSON.parse(
       this.convertStringToJSON(newAttendantData.menuInfo),
     );
-    // const targetIds = [];
-    // menuInfos.forEach((menuInfo) => {
-    //   targetIds.push(menuInfo.id);
-    // });
-    // const originMenuInfos =
-    //   await this.attendantMenuInfoService.findAttendantMenuInfosByIds(
-    //     targetIds,
-    //   );
-    // console.log('originMenuInfos', originMenuInfos);
-
-    // // 기존 메뉴 가격을 빼고 새로운 가격으로 펀딩을 채우기
-    // originMenuInfos.forEach((originMenuInfo) => {
-    //   targetFunding['curPrice'] -= originMenuInfo.menuPrice;
-    // });
     menuInfos.forEach((menuInfo) => {
-      targetFunding['curPrice'] += menuInfo.menuPrice;
+      targetFunding['curPrice'] += menuInfo.menuPrice * menuInfo.count;
     });
-
     const putTargetFunding = await this.fundingService.updateFunding(
       targetFunding.id,
       targetFunding,
