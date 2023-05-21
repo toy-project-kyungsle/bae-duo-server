@@ -83,7 +83,8 @@ export class AttendantController {
       this.convertStringToJSON(newAttendantData.menuInfo),
     );
     menuInfos.forEach((menuInfo) => {
-      targetFunding['curPrice'] += menuInfo.menuPrice * menuInfo.count;
+      targetFunding['curPrice'] +=
+        Number(menuInfo.menuPrice) * Number(menuInfo.count);
     });
     const putTargetFunding = await this.fundingService.updateFunding(
       targetFunding.id,
@@ -108,7 +109,8 @@ export class AttendantController {
 
     // 삭제하려는 메뉴의 가격로 funding의 curprice 낮추기
     targetMenuInfos.forEach((targetMenuInfo) => {
-      targetFunding['curPrice'] -= targetMenuInfo.menuPrice;
+      targetFunding['curPrice'] -=
+        targetMenuInfo.menuPrice * targetMenuInfo.count;
     });
     const putTargetFunding = await this.fundingService.updateFunding(
       targetFunding.id,

@@ -47,6 +47,7 @@ export class AttendantMenuInfoController {
     await this.lowerFundingPrice(
       targetAttendant.fundingId,
       targetMunuInfo.menuPrice,
+      targetMunuInfo.count,
     );
 
     await this.deleteAttendantIfNeeded(
@@ -59,10 +60,14 @@ export class AttendantMenuInfoController {
   }
 
   // menu의 가격에 맞게 funding의 curPrice를 낮추어줌
-  async lowerFundingPrice(fundingId: number, menuPrice: number) {
+  async lowerFundingPrice(
+    fundingId: number,
+    menuPrice: number,
+    menuCount: number,
+  ) {
     const targetFunding = await this.fundingService.findFundingById(fundingId);
 
-    targetFunding['curPrice'] -= menuPrice;
+    targetFunding['curPrice'] -= menuPrice * menuCount;
 
     const putTargetFunding = await this.fundingService.updateFunding(
       targetFunding.id,
