@@ -1,16 +1,11 @@
 import {
   Controller,
-  Get,
   Post,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import * as AWS from 'aws-sdk';
 import { UploadsService } from './uploads.service';
-import { Uploads } from './uploads.entity';
-
-//const s3 = new AWS.S3({ useAccelerateEndpoint: true });
 
 @Controller('uploads')
 export class UploadsController {
@@ -18,35 +13,7 @@ export class UploadsController {
 
   @Post('')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file) {
-    AWS.config.update({
-      region: 'ap-northeast-2',
-      accessKeyId: process.env.IAMAccess,
-      secretAccessKey: process.env.IAMSecret,
-    });
-    try {
-      const key = `${Date.now() + file.originalname}`;
-      const params = {
-        Bucket: process.env.BUCKET_NAME,
-        Key: key,
-        Body: file.buffer,
-        ContentType: 'image/jpeg',
-        ACL: 'public-read',
-      };
-      await new AWS.S3().putObject(params).promise();
-
-      const files = {
-        createdId: key,
-        name: file.originalname,
-        extension: file.mimetype,
-        size: file.size,
-        url: `https://baeduo.s3.ap-northeast-2.amazonaws.com/${key}`,
-      };
-      console.log('files', file);
-      this.uploadsService.saveUploads(files);
-      return file.originalname;
-    } catch (error) {
-      console.error('ERROR : ', error);
-    }
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    return this.uploadsService.uploadFile(file);
   }
 }

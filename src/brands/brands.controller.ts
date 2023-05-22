@@ -21,7 +21,10 @@ export class BrandsController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  async saveBrand(@UploadedFile() file, @Body() sentData: CreateBrandsDto) {
+  async saveBrand(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() sentData: CreateBrandsDto,
+  ) {
     return this.brandsService.saveBrand(sentData, file);
   }
 
