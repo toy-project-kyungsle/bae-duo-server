@@ -1,4 +1,8 @@
-import { NotFoundException, Injectable } from '@nestjs/common';
+import {
+  NotFoundException,
+  Injectable,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Uploads } from './uploads.entity';
 import { Repository } from 'typeorm';
@@ -57,6 +61,7 @@ export class UploadsService {
       return files.url;
     } catch (error) {
       console.error('ERROR : ', error);
+      throw new BadRequestException(error);
     }
     return '';
   }
