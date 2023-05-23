@@ -88,18 +88,17 @@ export class FundingService {
       throw new NotFoundException(`선택한 브랜드는 없는 브랜드입니다.`);
     }
 
-    const fileUrlList = [];
-    files.map((file) => {
-      this.uploadsService.uploadFile(file).then((fileInfo) => {
-        fileUrlList.push(fileInfo.id);
-      });
+    const fileIdList = [];
+    files.map(async (file) => {
+      const fileInfo = await this.uploadsService.uploadFile(file);
+      fileIdList.push(fileInfo.id);
     });
 
     const instance = await this.fundingRepository.save({
       ...sentData,
       brand: targetBrand.name,
       brandImage: targetBrand?.brandImage || null,
-      menuImageIds: fileUrlList.length > 0 ? fileUrlList.join(',') : null,
+      menuImageIds: fileIdList.join(',') || null,
     });
 
     if (!instance) {
