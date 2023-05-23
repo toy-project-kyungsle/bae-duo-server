@@ -52,6 +52,20 @@ export class BillService {
     return billWithPriceInfo;
   }
 
+  async findBillByfundingId(fundingId: number): Promise<billType> {
+    const bill = await this.billRepository.findOne({ where: { fundingId } });
+    const attendants = await this.attendantService.findAttendantsByFundingId(
+      fundingId,
+    );
+    const billWithPriceInfo: billType = {
+      ...bill,
+      priceInfo: this.getPriceInfoFromAttendants(bill, attendants),
+    };
+    if (!billWithPriceInfo)
+      throw new NotFoundException(`주문서를 찾을 수 없습니다.`);
+    return billWithPriceInfo;
+  }
+
   async deleteBill(id: number): Promise<number> {
     const affectedRowsCnt = (await this.billRepository.delete(id)).affected;
     if (affectedRowsCnt === 0)

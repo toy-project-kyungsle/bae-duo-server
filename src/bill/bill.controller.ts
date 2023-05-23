@@ -32,6 +32,13 @@ export class BillController {
     return this.billService.findBillById(id);
   }
 
+  @Get('/fundingId/:fundingId')
+  async findBillByFundingId(
+    @Param('fundingId') fundingId: number,
+  ): Promise<billType> {
+    return this.billService.findBillByfundingId(fundingId);
+  }
+
   @Delete('/:id')
   async deleteBillById(@Param('id') id: number): Promise<number> {
     return this.billService.deleteBill(id);
