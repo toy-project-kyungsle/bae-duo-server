@@ -45,11 +45,7 @@ export class FundingService {
     return fundings;
   }
 
-  async updateFunding(
-    id: number,
-    newFunding: UpdateFundingDto,
-    files: Express.Multer.File[],
-  ): Promise<void> {
+  async updateFunding(id: number, newFunding: UpdateFundingDto): Promise<void> {
     const funding = await this.fundingRepository.findOne({
       where: { id },
     });

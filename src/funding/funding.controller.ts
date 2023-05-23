@@ -47,7 +47,7 @@ export class FundingController {
     @Param('id') id: number,
     @Body() newFunding: UpdateFundingDto,
   ): Promise<void> {
-    return this.fundingService.updateFunding(id, newFunding, files);
+    return this.fundingService.updateFunding(id, newFunding);
   }
 
   @Delete('/:id')
