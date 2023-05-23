@@ -68,7 +68,7 @@ export class BillService {
     return billWithPriceInfo;
   }
 
-  async deleteBill(id: number): Promise<number> {
+  async deleteBillById(id: number): Promise<number> {
     const targetFundingId = (
       await this.billRepository.findOne({
         where: { id },
@@ -80,6 +80,23 @@ export class BillService {
     await this.fundingService.deleteFundingById(targetFundingId);
     const targetAttendants =
       await this.attendantService.findAttendantsByFundingId(targetFundingId);
+    targetAttendants.forEach(async (attendant) => {
+      await this.attendantService.deleteAttendant(attendant.id);
+    });
+    return HttpStatus.ACCEPTED;
+  }
+
+  async deleteBillByFundingId(fundingId: number): Promise<number> {
+    const targetBill = await this.billRepository.findOne({
+      where: { fundingId },
+    });
+    const affectedRowsCnt = (await this.billRepository.delete(targetBill.id))
+      .affected;
+    if (affectedRowsCnt === 0)
+      throw new NotFoundException(`삭제할 주문서를 찾을 수 없습니다.`);
+    await this.fundingService.deleteFundingById(fundingId);
+    const targetAttendants =
+      await this.attendantService.findAttendantsByFundingId(fundingId);
     targetAttendants.forEach(async (attendant) => {
       await this.attendantService.deleteAttendant(attendant.id);
     });
