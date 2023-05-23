@@ -37,11 +37,11 @@ export class Funding extends BaseEntity {
   status: FundingStatus;
 
   @Column()
+  description: string | null;
+
+  @Column()
   menuImageIds: string;
 
   @Column()
   createdAt: Date;
-
-  @Column()
-  description: string | null;
 }

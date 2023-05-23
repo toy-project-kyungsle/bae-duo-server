@@ -7,6 +7,7 @@ import { CreateFundingDto } from './dto/create-funding.dto';
 import { SearchFundingDto } from './dto/search-funding.dto';
 import { UpdateFundingDto } from './dto/update-funding.dto';
 import { UploadsService } from 'src/uploads/uploads.service';
+import { FundingDto } from './dto/funding.dto';
 
 @Injectable()
 export class FundingService {
@@ -23,6 +24,39 @@ export class FundingService {
     if (!funding)
       throw new NotFoundException(`펀딩을 찾을 수 없습니다. : ${id}`);
     return funding;
+  }
+
+  async findFundingResById(id: number): Promise<FundingDto> {
+    const funding = await this.fundingRepository.findOne({ where: { id } });
+    if (!funding)
+      throw new NotFoundException(`펀딩을 찾을 수 없습니다. : ${id}`);
+
+    const imageIds = funding.menuImageIds.split(',').map((id) => Number(id));
+    const fileList = await this.uploadsService.findUploadsListByIds(imageIds);
+    const menuImages =
+      fileList.length > 0
+        ? fileList.map((file) => ({
+            id: file.id,
+            url: file.url,
+          }))
+        : null;
+
+    return new FundingDto(
+      funding.id,
+      funding.starter,
+      funding.brandId,
+      funding.brand,
+      funding.brandImage,
+      funding.minPrice,
+      funding.curPrice,
+      funding.minMember,
+      funding.curMember,
+      funding.deadline,
+      funding.status,
+      funding.description,
+      menuImages,
+      funding.createdAt,
+    );
   }
 
   async findAllFundings(query: SearchFundingDto): Promise<Funding[]> {
@@ -98,7 +132,7 @@ export class FundingService {
       ...sentData,
       brand: targetBrand.name,
       brandImage: targetBrand?.brandImage || null,
-      menuImageIds: fileIdList.join(',') || null,
+      menuImageIds: fileIdList.length > 0 ? fileIdList.join(',') : null,
     });
 
     if (!instance) {

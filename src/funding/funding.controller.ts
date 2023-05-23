@@ -16,6 +16,7 @@ import { Funding } from './funding.entity';
 import { SearchFundingDto } from './dto/search-funding.dto';
 import { UpdateFundingDto } from './dto/update-funding.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { FundingDto } from './dto/funding.dto';
 
 @Controller('funding')
 export class FundingController {
@@ -27,8 +28,8 @@ export class FundingController {
   }
 
   @Get('/:id')
-  async findFundingById(@Param('id') id: number): Promise<Funding> {
-    return this.fundingService.findFundingById(id);
+  async findFundingById(@Param('id') id: number): Promise<FundingDto> {
+    return this.fundingService.findFundingResById(id);
   }
 
   @Post('/')

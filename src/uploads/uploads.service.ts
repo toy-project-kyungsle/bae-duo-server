@@ -32,6 +32,17 @@ export class UploadsService {
     return upload;
   }
 
+  async findUploadsListByIds(ids: number[]): Promise<Uploads[]> {
+    const uploadList = await this.uploadsRepository.find({
+      where: ids.map((id) => ({
+        id,
+      })),
+    });
+    if (!uploadList)
+      throw new NotFoundException(`업로드 파일을 찾을 수 없습니다.`);
+    return uploadList;
+  }
+
   async uploadFile(file: Express.Multer.File): Promise<UploadsDto> {
     AWS.config.update({
       region: 'ap-northeast-2',
