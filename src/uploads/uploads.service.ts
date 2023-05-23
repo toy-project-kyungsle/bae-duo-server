@@ -8,6 +8,7 @@ import { Uploads } from './uploads.entity';
 import { Repository } from 'typeorm';
 import { CreateUploadsDto } from '../brands/dto/create-uploads.dto';
 import * as AWS from 'aws-sdk';
+import { UploadsDto } from './dto/uploads.dto';
 
 @Injectable()
 export class UploadsService {
@@ -31,7 +32,7 @@ export class UploadsService {
     return upload;
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<string> {
+  async uploadFile(file: Express.Multer.File): Promise<UploadsDto> {
     AWS.config.update({
       region: 'ap-northeast-2',
       accessKeyId: process.env.IAMAccess,
@@ -56,13 +57,15 @@ export class UploadsService {
         url: `https://baeduo.s3.ap-northeast-2.amazonaws.com/${key}`,
       };
 
-      console.log('files', file);
-      await this.saveUploads(files);
-      return files.url;
+      const uploads = await this.saveUploads(files);
+
+      return {
+        id: uploads.id,
+        url: files.url,
+      };
     } catch (error) {
       console.error('ERROR : ', error);
       throw new BadRequestException(error);
     }
-    return '';
   }
 }

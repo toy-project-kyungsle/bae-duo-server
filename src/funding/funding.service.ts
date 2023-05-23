@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CreateFundingDto } from './dto/create-funding.dto';
 import { SearchFundingDto } from './dto/search-funding.dto';
 import { UpdateFundingDto } from './dto/update-funding.dto';
+import { UploadsService } from 'src/uploads/uploads.service';
 
 @Injectable()
 export class FundingService {
@@ -14,6 +15,7 @@ export class FundingService {
     private fundingRepository: Repository<Funding>,
     @InjectRepository(Brands)
     private brandRepository: Repository<Brands>,
+    private uploadsService: UploadsService,
   ) {}
 
   async findFundingById(id: number): Promise<Funding> {
@@ -24,22 +26,30 @@ export class FundingService {
   }
 
   async findAllFundings(query: SearchFundingDto): Promise<Funding[]> {
-    if (query?.status) {
-      const fundings = await this.fundingRepository.find({
-        where: {
-          status: query.status,
-        },
-      });
-      if (!fundings) throw new NotFoundException(`펀딩을 불러올 수 없습니다.`);
-      return fundings;
-    } else {
-      const fundings = await this.fundingRepository.find();
-      if (!fundings) throw new NotFoundException(`펀딩을 불러올 수 없습니다.`);
-      return fundings;
-    }
+    const fundings = query?.status
+      ? await this.fundingRepository.find({
+          where: {
+            status: query.status,
+          },
+          order: {
+            createdAt: 'DESC',
+          },
+        })
+      : await this.fundingRepository.find({
+          order: {
+            createdAt: 'DESC',
+          },
+        });
+
+    if (!fundings) throw new NotFoundException(`펀딩을 불러올 수 없습니다.`);
+    return fundings;
   }
 
-  async updateFunding(id: number, newFunding: UpdateFundingDto): Promise<void> {
+  async updateFunding(
+    id: number,
+    newFunding: UpdateFundingDto,
+    files: Express.Multer.File[],
+  ): Promise<void> {
     const funding = await this.fundingRepository.findOne({
       where: { id },
     });
@@ -47,14 +57,12 @@ export class FundingService {
     if (!funding) {
       throw new NotFoundException(`펀딩을 찾을 수 없습니다. : ${id}`);
     }
-
     if (funding.status !== 1) {
       throw new NotFoundException('펀딩은 진행 중일 때만 수정이 가능합니다.');
     }
-
-    if (funding.starter !== newFunding.starter) {
-      throw new NotFoundException('펀딩을 만든 사용자만 수정할 수 있습니다.');
-    }
+    // if (funding.starter !== newFunding.starter) {
+    //   throw new NotFoundException('펀딩을 만든 사용자만 수정할 수 있습니다.');
+    // }
 
     const targetBarnd = await this.brandRepository.findOne({
       where: { id: newFunding.brandId },
@@ -72,7 +80,10 @@ export class FundingService {
     await this.fundingRepository.update(id, newFunding);
   }
 
-  async saveFunding(sentData: CreateFundingDto): Promise<Funding> {
+  async saveFunding(
+    sentData: CreateFundingDto,
+    files: Express.Multer.File[],
+  ): Promise<Funding> {
     const targetBrand = await this.brandRepository.findOne({
       where: { id: sentData.brandId },
     });
@@ -81,9 +92,18 @@ export class FundingService {
       throw new NotFoundException(`선택한 브랜드는 없는 브랜드입니다.`);
     }
 
+    const fileUrlList = [];
+    files.map((file) => {
+      this.uploadsService.uploadFile(file).then((fileInfo) => {
+        fileUrlList.push(fileInfo.id);
+      });
+    });
+
     const instance = await this.fundingRepository.save({
       ...sentData,
       brand: targetBrand.name,
+      brandImage: targetBrand?.brandImage || null,
+      menuImageIds: fileUrlList.length > 0 ? fileUrlList.join(',') : null,
     });
 
     if (!instance) {

@@ -16,6 +16,9 @@ export class Funding extends BaseEntity {
   brand: string;
 
   @Column()
+  brandImage: string;
+
+  @Column()
   minPrice: number;
 
   @Column()

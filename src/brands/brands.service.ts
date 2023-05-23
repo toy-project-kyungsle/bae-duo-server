@@ -22,7 +22,7 @@ export class BrandsService {
 
     const instance = await this.brandsRepository.save({
       ...sentData,
-      brandImage: fileUrl,
+      brandImage: fileUrl.url,
     });
 
     if (!instance) {
@@ -74,7 +74,9 @@ export class BrandsService {
     });
 
     brand.brandImage = file
-      ? await this.uploadsService.uploadFile(file)
+      ? await (
+          await this.uploadsService.uploadFile(file)
+        ).url
       : brand.brandImage;
 
     await this.brandsRepository.update(id, brand);
