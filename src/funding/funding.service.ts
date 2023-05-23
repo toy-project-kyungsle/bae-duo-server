@@ -31,15 +31,21 @@ export class FundingService {
     if (!funding)
       throw new NotFoundException(`펀딩을 찾을 수 없습니다. : ${id}`);
 
-    const imageIds = funding.menuImageIds.split(',').map((id) => Number(id));
-    const fileList = await this.uploadsService.findUploadsListByIds(imageIds);
-    const menuImages =
-      fileList.length > 0
-        ? fileList.map((file) => ({
-            id: file.id,
-            url: file.url,
-          }))
-        : null;
+    const imageIds = funding.menuImageIds
+      ? funding.menuImageIds.split(',').map((id) => Number(id))
+      : null;
+
+    let menuImages = null;
+    if (imageIds) {
+      const fileList = await this.uploadsService.findUploadsListByIds(imageIds);
+      menuImages =
+        fileList.length > 0
+          ? fileList.map((file) => ({
+              id: file.id,
+              url: file.url,
+            }))
+          : null;
+    }
 
     return new FundingDto(
       funding.id,
@@ -123,10 +129,11 @@ export class FundingService {
     }
 
     const fileIdList = [];
-    files.map(async (file) => {
-      const fileInfo = await this.uploadsService.uploadFile(file);
+
+    for (let i = 0; i < files.length; i++) {
+      const fileInfo = await this.uploadsService.uploadFile(files[i]);
       fileIdList.push(fileInfo.id);
-    });
+    }
 
     const instance = await this.fundingRepository.save({
       ...sentData,
