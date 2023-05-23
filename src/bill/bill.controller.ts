@@ -43,4 +43,11 @@ export class BillController {
   async deleteBillById(@Param('id') id: number): Promise<number> {
     return this.billService.deleteBill(id);
   }
+
+  @Delete('/fundingId/:fundingId')
+  async deleteBillByFundingId(
+    @Param('fundingId') fundingId: number,
+  ): Promise<number> {
+    return this.billService.deleteBill(fundingId);
+  }
 }

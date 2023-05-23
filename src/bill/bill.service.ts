@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { billType, priceInfoType } from './biil.type';
 import { AttendantService } from 'src/attendant/attendant.service';
 import { AttendantType } from 'src/attendant/attendant.type';
+import { FundingService } from 'src/funding/funding.service';
 
 @Injectable()
 export class BillService {
@@ -13,6 +14,7 @@ export class BillService {
     @InjectRepository(BillEntity)
     private billRepository: Repository<BillEntity>,
     private attendantService: AttendantService,
+    private fundingService: FundingService,
   ) {}
 
   async saveBill(sentData: CreateBillDto): Promise<BillEntity> {
@@ -67,9 +69,20 @@ export class BillService {
   }
 
   async deleteBill(id: number): Promise<number> {
+    const targetFundingId = (
+      await this.billRepository.findOne({
+        where: { id },
+      })
+    ).fundingId;
     const affectedRowsCnt = (await this.billRepository.delete(id)).affected;
     if (affectedRowsCnt === 0)
       throw new NotFoundException(`삭제할 주문서를 찾을 수 없습니다.`);
+    await this.fundingService.deleteFundingById(targetFundingId);
+    const targetAttendants =
+      await this.attendantService.findAttendantsByFundingId(targetFundingId);
+    targetAttendants.forEach(async (attendant) => {
+      await this.attendantService.deleteAttendant(attendant.id);
+    });
     return HttpStatus.ACCEPTED;
   }
 
