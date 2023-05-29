@@ -27,11 +27,10 @@ export class BillService {
 
   async findAllBills(): Promise<billType[]> {
     const bills = await this.billRepository.find();
-    // this.slackService.sendText('Hello world was sent!');
-    this.slackService.postMessage({
-      text: 'hey~ its slack bot~',
-      channel: 'slack-test-2',
-    });
+    // this.slackService.postMessage({
+    //   text: 'hey~ its slack bot~',
+    //   channel: 'slack-test-2',
+    // });
     const billsWithPriceInfos: billType[] = await Promise.all(
       bills.map(async (bill) => {
         const attendants =

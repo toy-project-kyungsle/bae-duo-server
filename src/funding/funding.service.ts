@@ -8,6 +8,7 @@ import { SearchFundingDto } from './dto/search-funding.dto';
 import { UpdateFundingDto } from './dto/update-funding.dto';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { FundingDto } from './dto/funding.dto';
+import { SlackService } from 'nestjs-slack';
 
 @Injectable()
 export class FundingService {
@@ -17,8 +18,49 @@ export class FundingService {
     @InjectRepository(Brands)
     private brandRepository: Repository<Brands>,
     private uploadsService: UploadsService,
+    private slackService: SlackService,
   ) {}
 
+  // 1. Create
+  async saveFunding(
+    sentData: CreateFundingDto,
+    files: Express.Multer.File[],
+  ): Promise<Funding> {
+    const targetBrand = await this.brandRepository.findOne({
+      where: { id: sentData.brandId },
+    });
+
+    if (!targetBrand) {
+      throw new NotFoundException(`선택한 브랜드는 없는 브랜드입니다.`);
+    }
+
+    const fileIdList = [];
+
+    for (let i = 0; i < files?.length; i++) {
+      const fileInfo = await this.uploadsService.uploadFile(files[i]);
+      fileIdList.push(fileInfo.id);
+    }
+
+    const createdFunding = await this.fundingRepository.save({
+      ...sentData,
+      brand: targetBrand.name,
+      brandImage: targetBrand?.brandImage || null,
+      menuImageIds: fileIdList.length > 0 ? fileIdList.join(',') : null,
+    });
+
+    if (!createdFunding)
+      throw new NotFoundException(`펀딩을 생성할 수 없습니다.`);
+
+    // 펀딩이 만들어졌다고 slack에 동네방네 소문내기
+    this.slackService.postMessage({
+      text: this.getCreateFundingMessage(createdFunding),
+      channel: 'slack-test-2',
+    });
+
+    return createdFunding;
+  }
+
+  // 2. Read
   async findFundingById(id: number): Promise<Funding> {
     const funding = await this.fundingRepository.findOne({ where: { id } });
     if (!funding)
@@ -85,6 +127,7 @@ export class FundingService {
     return fundings;
   }
 
+  // 3. Updata
   async updateFunding(id: number, newFunding: UpdateFundingDto): Promise<void> {
     const funding = await this.fundingRepository.findOne({
       where: { id },
@@ -116,42 +159,34 @@ export class FundingService {
     await this.fundingRepository.update(id, newFunding);
   }
 
-  async saveFunding(
-    sentData: CreateFundingDto,
-    files: Express.Multer.File[],
-  ): Promise<Funding> {
-    const targetBrand = await this.brandRepository.findOne({
-      where: { id: sentData.brandId },
-    });
-
-    if (!targetBrand) {
-      throw new NotFoundException(`선택한 브랜드는 없는 브랜드입니다.`);
-    }
-
-    const fileIdList = [];
-
-    for (let i = 0; i < files.length; i++) {
-      const fileInfo = await this.uploadsService.uploadFile(files[i]);
-      fileIdList.push(fileInfo.id);
-    }
-
-    const instance = await this.fundingRepository.save({
-      ...sentData,
-      brand: targetBrand.name,
-      brandImage: targetBrand?.brandImage || null,
-      menuImageIds: fileIdList.length > 0 ? fileIdList.join(',') : null,
-    });
-
-    if (!instance) {
-      throw new NotFoundException(`펀딩을 생성할 수 없습니다.`);
-    }
-    return instance;
-  }
-
+  // 4. Delete
   async deleteFundingById(id: number): Promise<number> {
     const affectedRowsCnt = (await this.fundingRepository.delete(id)).affected;
     if (affectedRowsCnt === 0)
       throw new NotFoundException(`삭제할 펀딩을 찾을 수 없습니다.`);
     return HttpStatus.ACCEPTED;
+  }
+
+  // 5. Utils
+  getFullStringDate(date: Date) {
+    if (!date) return null;
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    return month + '월 ' + day + '일 ' + hour + '시 ' + minute + '분';
+  }
+
+  getCreateFundingMessage(createdFunding: Funding) {
+    return `
+오늘 배달 시켜 드실 분~
+브랜드 : ${createdFunding.brand}
+마감 시간 : ${
+      this.getFullStringDate(new Date(createdFunding.deadline)) || '미정'
+    }
+최소 인원 : ${createdFunding.minMember || '미정'}
+최소 금액 : ${createdFunding.minPrice || '미정'}
+전하는 말 : ${createdFunding.description || '없읍니다'}
+    `;
   }
 }
