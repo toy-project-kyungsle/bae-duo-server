@@ -19,15 +19,11 @@ import { BrandsService } from 'src/brands/brands.service';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { Uploads as UploadsEntity } from 'src/uploads/uploads.entity';
 import { UploadsController } from 'src/uploads/uploads.controller';
-// import { SlackNoticeService } from 'src/slack/slack.service';
-// import { SlackNoticeController } from 'src/slack/slack.controller';
-// import { SlackNoticeModule } from 'src/slack/slack.module';
 import { SlackService } from 'nestjs-slack';
 
 @Module({
   imports: [
     AttendantModule,
-    // SlackNoticeModule,
     TypeOrmModule.forFeature([
       BillEntity,
       AttendantEntity,
@@ -44,7 +40,6 @@ import { SlackService } from 'nestjs-slack';
     FundingController,
     BrandsController,
     UploadsController,
-    // SlackNoticeController,
   ],
   providers: [
     BillService,
@@ -53,7 +48,6 @@ import { SlackService } from 'nestjs-slack';
     FundingService,
     BrandsService,
     UploadsService,
-    // SlackNoticeService,
     SlackService,
   ],
 })
