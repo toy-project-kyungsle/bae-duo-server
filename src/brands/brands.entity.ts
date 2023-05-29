@@ -1,4 +1,12 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
+import { Funding } from 'src/funding/funding.entity';
+import {
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  Column,
+  Entity,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
 export class Brands extends BaseEntity {
@@ -31,6 +39,12 @@ export class Brands extends BaseEntity {
 
   @Column()
   createdAt: string;
+
+  @OneToMany((type) => Funding, (funding) => funding.brandId, {
+    cascade: true,
+  })
+  @JoinColumn()
+  funding: Funding;
 }
 
 class Upload extends BaseEntity {

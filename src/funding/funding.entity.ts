@@ -1,5 +1,13 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
+import {
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  Column,
+  Entity,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { FundingStatus } from './funding.model';
+import { Brands } from 'src/brands/brands.entity';
 
 @Entity()
 export class Funding extends BaseEntity {
@@ -44,4 +52,10 @@ export class Funding extends BaseEntity {
 
   @Column()
   createdAt: Date;
+
+  @ManyToOne((type) => Brands, (brands) => brands.id)
+  brands: Brands;
+
+  @JoinColumn({ name: 'brandId' })
+  funding: Funding;
 }
