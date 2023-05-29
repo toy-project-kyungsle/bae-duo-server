@@ -39,12 +39,6 @@ export class Brands extends BaseEntity {
 
   @Column()
   createdAt: string;
-
-  @OneToMany((type) => Funding, (funding) => funding.brandId, {
-    cascade: true,
-  })
-  @JoinColumn()
-  funding: Funding;
 }
 
 class Upload extends BaseEntity {

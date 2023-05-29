@@ -1,4 +1,12 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
+import { Funding } from 'src/funding/funding.entity';
+import {
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  Column,
+  Entity,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
 export class Uploads extends BaseEntity {
@@ -19,4 +27,8 @@ export class Uploads extends BaseEntity {
 
   @Column()
   url: string;
+
+  @ManyToOne(() => Funding)
+  @JoinColumn({ name: 'funding_id' })
+  funding: Funding;
 }
