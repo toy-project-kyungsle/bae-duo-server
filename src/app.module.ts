@@ -12,6 +12,7 @@ import { BrandsModule } from './brands/brands.module';
 import { AttendantMenuInfoModule } from './attendantMenuInfo/attendantMenuInfo.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { SlackModule } from 'nestjs-slack';
+import { SlackNoticeModule } from 'src/slack/slack.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { SlackModule } from 'nestjs-slack';
     UserModule,
     BrandsModule,
     UploadsModule,
+    SlackNoticeModule,
     ConfigModule.forRoot({ isGlobal: true, envFilePath: `.env` }),
     SlackModule.forRoot({
       type: 'api',
@@ -28,17 +30,6 @@ import { SlackModule } from 'nestjs-slack';
       defaultChannel: 'github-action-slack-test',
       isGlobal: true,
     }),
-    // SlackModule.forRoot({
-    //   type: 'webhook',
-    //   channels: [
-    //     {
-    //       name: 'github-action-slack-test',
-    //       url: '...',
-    //     },
-    //   ],
-    //   defaultChannel: 'github-action-slack-test',
-    //   isGlobal: true,
-    // }),
     TypeOrmModule.forRootAsync({
       imports: [MySqlConfigModule],
       useClass: MySqlConfigService,
