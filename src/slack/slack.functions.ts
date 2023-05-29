@@ -19,3 +19,15 @@ export const getCreateFundingMessage = (createdFunding: Funding) => {
 전하는 말 : ${createdFunding.description || '없읍니다'}
     `;
 };
+
+export const getFundingReadyMessage = (funding: Funding) => {
+  return `
+메뉴 주문 조건이 충족되었습니다!
+
+인원 : (${funding.curMember}/${funding.minMember})
+가격 : {${funding.curMember}/${funding.minPrice}}
+
+${funding.starter}님은 시간 맞춰 주문 부탁드립니다~
+[홈페이지 주소 ]
+  `;
+};
