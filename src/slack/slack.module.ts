@@ -7,4 +7,6 @@ import { SlackService } from 'nestjs-slack';
   controllers: [SlackNoticeController],
   providers: [SlackService, SlackNoticeService],
 })
-export class SlackNoticeModule {}
+export class SlackNoticeModule {
+  global: true;
+}

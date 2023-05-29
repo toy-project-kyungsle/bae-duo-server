@@ -16,14 +16,20 @@ import { BrandsService } from 'src/brands/brands.service';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { Uploads as UploadsEntity } from 'src/uploads/uploads.entity';
 import { UploadsController } from 'src/uploads/uploads.controller';
+import { SlackNoticeModule } from 'src/slack/slack.module';
+import { SlackNoticeController } from 'src/slack/slack.controller';
+import { SlackNoticeService } from 'src/slack/slack.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AttendantEntity]),
-    TypeOrmModule.forFeature([AttendantMenuInfoEntity]),
-    TypeOrmModule.forFeature([FundingEntity]),
-    TypeOrmModule.forFeature([BrandsEntity]),
-    TypeOrmModule.forFeature([UploadsEntity]),
+    SlackNoticeModule,
+    TypeOrmModule.forFeature([
+      AttendantEntity,
+      AttendantMenuInfoEntity,
+      FundingEntity,
+      BrandsEntity,
+      UploadsEntity,
+    ]),
   ],
   controllers: [
     AttendantController,
@@ -31,6 +37,7 @@ import { UploadsController } from 'src/uploads/uploads.controller';
     FundingController,
     BrandsController,
     UploadsController,
+    SlackNoticeController,
   ],
   providers: [
     AttendantService,
@@ -38,6 +45,7 @@ import { UploadsController } from 'src/uploads/uploads.controller';
     FundingService,
     BrandsService,
     UploadsService,
+    SlackNoticeService,
   ],
 })
 export class AttendantMenuInfoModule {}

@@ -8,7 +8,8 @@ import { SearchFundingDto } from './dto/search-funding.dto';
 import { UpdateFundingDto } from './dto/update-funding.dto';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { FundingDto } from './dto/funding.dto';
-import { SlackService } from 'nestjs-slack';
+import { SlackNoticeService } from 'src/slack/slack.service';
+import { getCreateFundingMessage } from 'src/slack/slack.functions';
 
 @Injectable()
 export class FundingService {
@@ -18,7 +19,7 @@ export class FundingService {
     @InjectRepository(Brands)
     private brandRepository: Repository<Brands>,
     private uploadsService: UploadsService,
-    private slackService: SlackService,
+    private slackService: SlackNoticeService,
   ) {}
 
   // 1. Create
@@ -53,7 +54,7 @@ export class FundingService {
 
     // 펀딩이 만들어졌다고 slack에 동네방네 소문내기
     this.slackService.postMessage({
-      text: this.getCreateFundingMessage(createdFunding),
+      text: getCreateFundingMessage(createdFunding),
       channel: 'slack-test-2',
     });
 
@@ -165,28 +166,5 @@ export class FundingService {
     if (affectedRowsCnt === 0)
       throw new NotFoundException(`삭제할 펀딩을 찾을 수 없습니다.`);
     return HttpStatus.ACCEPTED;
-  }
-
-  // 5. Utils
-  getFullStringDate(date: Date) {
-    if (!date) return null;
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-    return month + '월 ' + day + '일 ' + hour + '시 ' + minute + '분';
-  }
-
-  getCreateFundingMessage(createdFunding: Funding) {
-    return `
-오늘 배달 시켜 드실 분~
-브랜드 : ${createdFunding.brand}
-마감 시간 : ${
-      this.getFullStringDate(new Date(createdFunding.deadline)) || '미정'
-    }
-최소 인원 : ${createdFunding.minMember || '미정'}
-최소 금액 : ${createdFunding.minPrice || '미정'}
-전하는 말 : ${createdFunding.description || '없읍니다'}
-    `;
   }
 }

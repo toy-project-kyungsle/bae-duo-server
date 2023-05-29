@@ -7,15 +7,16 @@ import { Brands } from 'src/brands/brands.entity';
 import { Uploads } from 'src/uploads/uploads.entity';
 import { UploadsController } from 'src/uploads/uploads.controller';
 import { UploadsService } from 'src/uploads/uploads.service';
-import { SlackService } from 'nestjs-slack';
+import { SlackNoticeModule } from 'src/slack/slack.module';
+import { SlackNoticeController } from 'src/slack/slack.controller';
+import { SlackNoticeService } from 'src/slack/slack.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Funding]),
-    TypeOrmModule.forFeature([Brands]),
-    TypeOrmModule.forFeature([Uploads]),
+    SlackNoticeModule,
+    TypeOrmModule.forFeature([Funding, Brands, Uploads]),
   ],
-  controllers: [FundingController, UploadsController],
-  providers: [FundingService, UploadsService, SlackService],
+  controllers: [FundingController, UploadsController, SlackNoticeController],
+  providers: [FundingService, UploadsService, SlackNoticeService],
 })
 export class FundingModule {}
