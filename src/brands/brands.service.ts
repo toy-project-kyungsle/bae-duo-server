@@ -32,24 +32,53 @@ export class BrandsService {
     return instance;
   }
 
-  async findAllBrands(): Promise<Brands[]> {
-    const brands = await this.brandsRepository.find();
+  async findAllBrands() {
+    const brands = await this.brandsRepository.find({
+      where: {
+        isDeleted: 0,
+      },
+      relations: ['uploads'],
+    });
     if (!brands) {
       throw new NotFoundException(`브랜드 리스트를 찾을 수 없습니다.`);
     }
 
-    return brands;
+    return brands.map((brand) => ({
+      id: brand.id,
+      createdUserId: brand.createdUserId,
+      name: brand.name,
+      orderType: brand.orderType,
+      orderCnt: brand.orderCnt,
+      imageId: brand.uploads?.id || null,
+      brandImage: brand.uploads?.url || null,
+      defaultDeadLine: brand.defaultDeadLine,
+      defaultMinPrice: brand.defaultMinPrice,
+      defaultMinMember: brand.defaultMinMember,
+      createdAt: brand.createdAt,
+    }));
   }
 
-  async findBrandById(id: number): Promise<Brands> {
+  async findBrandById(id: number) {
     const brand = await this.brandsRepository.findOne({
       where: { id },
-      relations: ['upload'],
+      relations: ['uploads'],
     });
     if (!brand) {
-      throw new NotFoundException(`브랜드 리스트를 찾을 수 없습니다.`);
+      throw new NotFoundException(`브랜드를 찾을 수 없습니다.`);
     }
-    return brand;
+    return {
+      id: brand.id,
+      createdUserId: brand.createdUserId,
+      name: brand.name,
+      orderType: brand.orderType,
+      orderCnt: brand.orderCnt,
+      imageId: brand.uploads?.id || null,
+      brandImage: brand.uploads?.url || null,
+      defaultDeadLine: brand.defaultDeadLine,
+      defaultMinPrice: brand.defaultMinPrice,
+      defaultMinMember: brand.defaultMinMember,
+      createdAt: brand.createdAt,
+    };
   }
 
   async updateBrand(
@@ -60,8 +89,9 @@ export class BrandsService {
     const brand = await this.brandsRepository.findOne({
       where: { id },
     });
+
     if (!brand) {
-      throw new NotFoundException(`브랜드 리스트를 찾을 수 없습니다.`);
+      throw new NotFoundException(`브랜드를 찾을 수 없습니다.`);
     }
 
     if (brand.createdUserId !== Number(sentData.createdUserId)) {
@@ -73,21 +103,27 @@ export class BrandsService {
       brand[key] = sentData[key];
     });
 
-    brand.brandImage = file
-      ? await (
-          await this.uploadsService.uploadFile(file)
-        ).url
-      : brand.brandImage;
+    // brand.brandImage = file
+    //   ? await (
+    //       await this.uploadsService.uploadFile(file)
+    //     ).url
+    //   : brand.brandImage;
 
     await this.brandsRepository.update(id, brand);
     return brand;
   }
 
   async deleteBrand(id: number): Promise<number> {
-    const affectedRowsCnt = (await this.brandsRepository.delete(id)).affected;
-    if (affectedRowsCnt === 0) {
-      throw new NotFoundException(`삭제할 브랜드 리스트를 찾을 수 없습니다.`);
+    const brand = await this.brandsRepository.findOne({
+      where: { id },
+    });
+    if (!brand) {
+      throw new NotFoundException(`브랜드를 찾을 수 없습니다.`);
     }
+
+    brand.isDeleted = 1;
+    await this.brandsRepository.update(id, brand);
+
     return HttpStatus.ACCEPTED;
   }
 }

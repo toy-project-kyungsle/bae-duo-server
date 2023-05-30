@@ -29,12 +29,12 @@ export class BrandsController {
   }
 
   @Get('/')
-  async findAllBrands(): Promise<Brands[]> {
+  async findAllBrands() {
     return this.brandsService.findAllBrands();
   }
 
   @Get('/:id')
-  async findBrandById(@Param('id') id: number): Promise<Brands> {
+  async findBrandById(@Param('id') id: number) {
     return this.brandsService.findBrandById(id);
   }
 

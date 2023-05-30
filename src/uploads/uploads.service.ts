@@ -79,4 +79,45 @@ export class UploadsService {
       throw new BadRequestException(error);
     }
   }
+
+  async uploadFileWithFundingId(
+    file: Express.Multer.File,
+    fundingId: number,
+  ): Promise<UploadsDto> {
+    AWS.config.update({
+      region: 'ap-northeast-2',
+      accessKeyId: process.env.IAMAccess,
+      secretAccessKey: process.env.IAMSecret,
+    });
+    try {
+      const key = `${Date.now() + file.originalname}`;
+      const params = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: key,
+        Body: file.buffer,
+        ContentType: 'image/jpeg',
+        ACL: 'public-read',
+      };
+      await new AWS.S3().putObject(params).promise();
+
+      const files = {
+        createdId: key,
+        name: file.originalname,
+        extension: file.mimetype,
+        size: file.size,
+        url: `https://baeduo.s3.ap-northeast-2.amazonaws.com/${key}`,
+        fundingId,
+      };
+
+      const uploads = await this.saveUploads(files);
+
+      return {
+        id: uploads.id,
+        url: files.url,
+      };
+    } catch (error) {
+      console.error('ERROR : ', error);
+      throw new BadRequestException(error);
+    }
+  }
 }

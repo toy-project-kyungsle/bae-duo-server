@@ -1,10 +1,12 @@
 import { Funding } from 'src/funding/funding.entity';
+import { Uploads } from 'src/uploads/uploads.entity';
 import {
   BaseEntity,
   PrimaryGeneratedColumn,
   Column,
   Entity,
   OneToMany,
+  OneToOne,
   JoinColumn,
 } from 'typeorm';
 
@@ -26,7 +28,7 @@ export class Brands extends BaseEntity {
   orderCnt: number;
 
   @Column()
-  brandImage?: string;
+  imageId?: number;
 
   @Column()
   defaultDeadLine?: Date;
@@ -39,12 +41,11 @@ export class Brands extends BaseEntity {
 
   @Column()
   createdAt: string;
-}
-
-class Upload extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
 
   @Column()
-  createdId: number;
+  isDeleted: number;
+
+  @OneToOne(() => Uploads)
+  @JoinColumn({ name: 'imageId' })
+  uploads: Uploads;
 }

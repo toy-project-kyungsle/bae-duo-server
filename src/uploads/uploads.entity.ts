@@ -1,3 +1,4 @@
+import { Brands } from 'src/brands/brands.entity';
 import { Funding } from 'src/funding/funding.entity';
 import {
   BaseEntity,
@@ -6,6 +7,7 @@ import {
   Entity,
   ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 
 @Entity()
@@ -28,7 +30,10 @@ export class Uploads extends BaseEntity {
   @Column()
   url: string;
 
-  // @ManyToOne(() => Funding)
-  // @JoinColumn({ name: 'funding_id' })
-  // funding: Funding;
+  @Column()
+  fundingId: number;
+
+  @ManyToOne(() => Funding, (funding) => funding.id)
+  @JoinColumn({ name: 'fundingId', referencedColumnName: 'id' })
+  funding: Funding;
 }

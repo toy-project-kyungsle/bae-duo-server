@@ -12,7 +12,7 @@ export const getFullStringDate = (date: Date) => {
 export const getCreateFundingMessage = (createdFunding: Funding) => {
   return `
 오늘 배달 시켜 드실 분~
-브랜드 : ${createdFunding.brand}
+
 마감 시간 : ${getFullStringDate(new Date(createdFunding.deadline)) || '미정'}
 최소 인원 : ${createdFunding.minMember || '미정'}
 최소 금액 : ${createdFunding.minPrice || '미정'}

@@ -34,22 +34,21 @@ export class FundingService {
       throw new NotFoundException(`선택한 브랜드는 없는 브랜드입니다.`);
     }
 
-    const fileIdList = [];
-
-    for (let i = 0; i < files?.length; i++) {
-      const fileInfo = await this.uploadsService.uploadFile(files[i]);
-      fileIdList.push(fileInfo.id);
-    }
-
     const createdFunding = await this.fundingRepository.save({
       ...sentData,
       brand: targetBrand.name,
-      brandImage: targetBrand?.brandImage || null,
-      menuImageIds: fileIdList.length > 0 ? fileIdList.join(',') : null,
     });
 
     if (!createdFunding)
       throw new NotFoundException(`펀딩을 생성할 수 없습니다.`);
+
+    // 파일 업로드
+    for (let i = 0; i < files?.length; i++) {
+      await this.uploadsService.uploadFileWithFundingId(
+        files[i],
+        createdFunding.id,
+      );
+    }
 
     // 펀딩이 만들어졌다고 slack에 동네방네 소문내기
     this.slackService.postMessage({
@@ -69,29 +68,32 @@ export class FundingService {
   }
 
   async findFundingResById(id: number) {
-    const funding = await this.fundingRepository.findOne({ where: { id } });
+    const funding = await this.fundingRepository.findOne({
+      where: { id },
+      relations: ['brands', 'user', 'uploads'],
+    });
     if (!funding)
       throw new NotFoundException(`펀딩을 찾을 수 없습니다. : ${id}`);
 
-    const imageIds = funding.menuImageIds
-      ? funding.menuImageIds.split(',').map((id) => Number(id))
-      : null;
-
-    let menuImages = null;
-    if (imageIds) {
-      const fileList = await this.uploadsService.findUploadsListByIds(imageIds);
-      menuImages =
-        fileList.length > 0
-          ? fileList.map((file) => ({
-              id: file.id,
-              url: file.url,
-            }))
-          : null;
-    }
-
     return {
-      ...funding,
-      menuImages,
+      id: funding.id,
+      starterId: funding.starterId,
+      starter: funding.starter,
+      brandId: funding.brandId,
+      brand: funding.brands.name,
+      brandImage: funding.brands.uploads?.url || null,
+      minPrice: funding.minPrice,
+      curPrice: funding.curPrice,
+      minMember: funding.minMember,
+      curMember: funding.curMember,
+      deadline: funding.deadline,
+      status: funding.status,
+      description: funding.description,
+      menuImages: funding.uploads.map((img) => ({
+        id: img.id,
+        url: img.url,
+      })),
+      createdAt: funding.createdAt,
     };
   }
 

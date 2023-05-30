@@ -5,9 +5,12 @@ import {
   Entity,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { FundingStatus } from './funding.model';
 import { Brands } from 'src/brands/brands.entity';
+import { User } from 'src/user/user.entity';
+import { Uploads } from 'src/uploads/uploads.entity';
 
 @Entity()
 export class Funding extends BaseEntity {
@@ -22,12 +25,6 @@ export class Funding extends BaseEntity {
 
   @Column()
   brandId: number;
-
-  @Column()
-  brand: string;
-
-  @Column()
-  brandImage: string;
 
   @Column()
   minPrice: number;
@@ -51,14 +48,16 @@ export class Funding extends BaseEntity {
   description: string | null;
 
   @Column()
-  menuImageIds: string;
-
-  @Column()
   createdAt: Date;
 
-  // @ManyToOne((type) => Brands, (brands) => brands.id)
-  // brands: Brands;
+  @ManyToOne((type) => Brands, (brands) => brands.id)
+  @JoinColumn({ name: 'brandId' })
+  brands: Brands;
 
-  // @JoinColumn({ name: 'brandId' })
-  // funding: Funding;
+  @ManyToOne((type) => User, (user) => user.id)
+  @JoinColumn({ name: 'starterId' })
+  user: User;
+
+  @OneToMany((type) => Uploads, (relation) => relation.funding)
+  uploads: Uploads[];
 }
