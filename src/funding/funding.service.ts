@@ -36,18 +36,22 @@ export class FundingService {
 
     const createdFunding = await this.fundingRepository.save({
       ...sentData,
-      brand: targetBrand.name,
+      brandId: targetBrand.id,
     });
+
+    console.log(createdFunding);
 
     if (!createdFunding)
       throw new NotFoundException(`펀딩을 생성할 수 없습니다.`);
 
     // 파일 업로드
-    for (let i = 0; i < files?.length; i++) {
-      await this.uploadsService.uploadFileWithFundingId(
-        files[i],
-        createdFunding.id,
-      );
+    if (files?.length > 0) {
+      for (let i = 0; i < files?.length; i++) {
+        await this.uploadsService.uploadFileWithFundingId(
+          files[i],
+          createdFunding.id,
+        );
+      }
     }
 
     // 펀딩이 만들어졌다고 slack에 동네방네 소문내기
@@ -77,8 +81,8 @@ export class FundingService {
 
     return {
       id: funding.id,
-      starterId: funding.starterId,
-      starter: funding.starter,
+      starterId: funding.user.id,
+      starter: funding.user.name,
       brandId: funding.brandId,
       brand: funding.brands.name,
       brandImage: funding.brands.uploads?.url || null,
@@ -119,8 +123,8 @@ export class FundingService {
 
     return fundings.map((funding) => ({
       id: funding.id,
-      starterId: funding.starterId,
-      starter: funding.starter,
+      starterId: funding.user.id,
+      starter: funding.user.name,
       brandId: funding.brandId,
       brand: funding.brands?.name || null,
       brandImage: funding.brands?.uploads?.url || null,

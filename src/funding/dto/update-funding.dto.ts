@@ -1,5 +1,5 @@
 export class UpdateFundingDto {
-  starter: string;
+  // starter: string;
   brandId?: number;
   brand?: string;
   deadline?: Date;

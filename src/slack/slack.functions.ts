@@ -12,7 +12,7 @@ export const getFullStringDate = (date: Date) => {
 export const getCreateFundingMessage = (createdFunding: Funding) => {
   return `
 오늘 배달 시켜 드실 분~
-
+브랜드 : ${createdFunding.brands.name}
 마감 시간 : ${getFullStringDate(new Date(createdFunding.deadline)) || '미정'}
 최소 인원 : ${createdFunding.minMember || '미정'}
 최소 금액 : ${createdFunding.minPrice || '미정'}
@@ -27,7 +27,7 @@ export const getFundingReadyMessage = (funding: Funding) => {
 인원 : (${funding.curMember}/${funding.minMember})
 가격 : {${funding.curMember}/${funding.minPrice}}
 
-${funding.starter}님은 시간 맞춰 주문 부탁드립니다~
+${funding.user.name}님은 시간 맞춰 주문 부탁드립니다~
 [홈페이지 주소 ]
   `;
 };

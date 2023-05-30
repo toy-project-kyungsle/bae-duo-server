@@ -100,7 +100,7 @@ export class BrandsService {
     }
 
     if (file) {
-      await this.uploadsService.deleteUploads(brand.id);
+      await this.uploadsService.deleteUploads(brand.imageId);
       const fileInfo = await this.uploadsService.uploadFile(file);
       brand.imageId = fileInfo.id;
     }
