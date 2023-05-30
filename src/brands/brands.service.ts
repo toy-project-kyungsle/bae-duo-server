@@ -88,6 +88,7 @@ export class BrandsService {
   ): Promise<Brands> {
     const brand = await this.brandsRepository.findOne({
       where: { id },
+      relations: ['uploads'],
     });
 
     if (!brand) {
