@@ -97,7 +97,7 @@ export class FundingService {
     };
   }
 
-  async findAllFundings(query: SearchFundingDto): Promise<Funding[]> {
+  async findAllFundings(query: SearchFundingDto) {
     const fundings = query?.status
       ? await this.fundingRepository.find({
           where: {
@@ -106,15 +106,33 @@ export class FundingService {
           order: {
             createdAt: 'DESC',
           },
+          relations: ['brands', 'user', 'uploads'],
         })
       : await this.fundingRepository.find({
           order: {
             createdAt: 'DESC',
           },
+          relations: ['brands', 'user', 'uploads'],
         });
 
     if (!fundings) throw new NotFoundException(`펀딩을 불러올 수 없습니다.`);
-    return fundings;
+
+    return fundings.map((funding) => ({
+      id: funding.id,
+      starterId: funding.starterId,
+      starter: funding.starter,
+      brandId: funding.brandId,
+      brand: funding.brands?.name || null,
+      brandImage: funding.brands?.uploads?.url || null,
+      minPrice: funding.minPrice,
+      curPrice: funding.curPrice,
+      minMember: funding.minMember,
+      curMember: funding.curMember,
+      deadline: funding.deadline,
+      status: funding.status,
+      description: funding.description,
+      createdAt: funding.createdAt,
+    }));
   }
 
   // 3. Updata
