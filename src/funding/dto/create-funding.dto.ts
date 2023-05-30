@@ -1,4 +1,5 @@
 export class CreateFundingDto {
+  starterId: number;
   starter: string;
   brandId: number;
   deadline: Date;

@@ -15,6 +15,9 @@ export class Funding extends BaseEntity {
   id: number;
 
   @Column()
+  starterId: number;
+
+  @Column()
   starter: string;
 
   @Column()
@@ -53,9 +56,9 @@ export class Funding extends BaseEntity {
   @Column()
   createdAt: Date;
 
-  @ManyToOne((type) => Brands, (brands) => brands.id)
-  brands: Brands;
+  // @ManyToOne((type) => Brands, (brands) => brands.id)
+  // brands: Brands;
 
-  @JoinColumn({ name: 'brandId' })
-  funding: Funding;
+  // @JoinColumn({ name: 'brandId' })
+  // funding: Funding;
 }

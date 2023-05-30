@@ -28,7 +28,7 @@ export class Uploads extends BaseEntity {
   @Column()
   url: string;
 
-  @ManyToOne(() => Funding)
-  @JoinColumn({ name: 'funding_id' })
-  funding: Funding;
+  // @ManyToOne(() => Funding)
+  // @JoinColumn({ name: 'funding_id' })
+  // funding: Funding;
 }

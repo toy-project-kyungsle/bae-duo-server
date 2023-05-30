@@ -7,7 +7,6 @@ import { CreateFundingDto } from './dto/create-funding.dto';
 import { SearchFundingDto } from './dto/search-funding.dto';
 import { UpdateFundingDto } from './dto/update-funding.dto';
 import { UploadsService } from 'src/uploads/uploads.service';
-import { FundingDto } from './dto/funding.dto';
 import { SlackNoticeService } from 'src/slack/slack.service';
 import { getCreateFundingMessage } from 'src/slack/slack.functions';
 
@@ -69,7 +68,7 @@ export class FundingService {
     return funding;
   }
 
-  async findFundingResById(id: number): Promise<FundingDto> {
+  async findFundingResById(id: number) {
     const funding = await this.fundingRepository.findOne({ where: { id } });
     if (!funding)
       throw new NotFoundException(`펀딩을 찾을 수 없습니다. : ${id}`);
@@ -90,22 +89,10 @@ export class FundingService {
           : null;
     }
 
-    return new FundingDto(
-      funding.id,
-      funding.starter,
-      funding.brandId,
-      funding.brand,
-      funding.brandImage,
-      funding.minPrice,
-      funding.curPrice,
-      funding.minMember,
-      funding.curMember,
-      funding.deadline,
-      funding.status,
-      funding.description,
+    return {
+      ...funding,
       menuImages,
-      funding.createdAt,
-    );
+    };
   }
 
   async findAllFundings(query: SearchFundingDto): Promise<Funding[]> {
