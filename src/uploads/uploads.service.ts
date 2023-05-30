@@ -26,8 +26,8 @@ export class UploadsService {
     return instance;
   }
 
-  async findUploadsById(name: string): Promise<Uploads> {
-    const upload = await this.uploadsRepository.findOne({ where: { name } });
+  async findUploadsById(id: number): Promise<Uploads> {
+    const upload = await this.uploadsRepository.findOne({ where: { id } });
     if (!upload) throw new NotFoundException(`업로드 파일을 찾을 수 없습니다.`);
     return upload;
   }
@@ -41,6 +41,13 @@ export class UploadsService {
     if (!uploadList)
       throw new NotFoundException(`업로드 파일을 찾을 수 없습니다.`);
     return uploadList;
+  }
+
+  async deleteUploads(id: number) {
+    const file = await this.findUploadsById(id);
+    file.isDeleted = 1;
+    const uploads = await this.uploadsRepository.update(id, file);
+    return uploads;
   }
 
   async uploadFile(file: Express.Multer.File): Promise<UploadsDto> {

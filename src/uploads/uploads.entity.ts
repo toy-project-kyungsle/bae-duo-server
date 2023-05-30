@@ -33,6 +33,9 @@ export class Uploads extends BaseEntity {
   @Column()
   fundingId: number;
 
+  @Column()
+  isDeleted: number;
+
   @ManyToOne(() => Funding, (funding) => funding.id)
   @JoinColumn({ name: 'fundingId', referencedColumnName: 'id' })
   funding: Funding;

@@ -18,11 +18,11 @@ export class BrandsService {
     sentData: CreateBrandsDto,
     file: Express.Multer.File,
   ): Promise<Brands> {
-    const fileUrl = file ? await this.uploadsService.uploadFile(file) : null;
+    const fileInfo = file ? await this.uploadsService.uploadFile(file) : null;
 
     const instance = await this.brandsRepository.save({
       ...sentData,
-      brandImage: fileUrl.url,
+      imageId: fileInfo?.id || null,
     });
 
     if (!instance) {
@@ -98,16 +98,16 @@ export class BrandsService {
       throw new NotFoundException(`브랜드를 만든 사용자만 수정할 수 있습니다.`);
     }
 
+    if (file) {
+      await this.uploadsService.deleteUploads(brand.id);
+      const fileInfo = await this.uploadsService.uploadFile(file);
+      brand.imageId = fileInfo.id;
+    }
+
     Object.keys(sentData).forEach((key) => {
       if (['id', 'createdUserId', 'createdAt', 'file'].includes(key)) return;
       brand[key] = sentData[key];
     });
-
-    // brand.brandImage = file
-    //   ? await (
-    //       await this.uploadsService.uploadFile(file)
-    //     ).url
-    //   : brand.brandImage;
 
     await this.brandsRepository.update(id, brand);
     return brand;
