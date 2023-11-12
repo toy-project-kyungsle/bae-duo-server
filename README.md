@@ -2,7 +2,7 @@
 
 23년 1월부터 5월까지 5개월동안 열심히 만들었지만 사용하지 못한 애증의 사이트였습니다.
 
-거의 모든 API를 제작해본 프로젝트입니다!
+거의 모든 API를 제작해본 프로젝트입니다! 프론트 리드미도 확인해보시면 좋습니다. https://github.com/keinn51/bae-duo
 
 ### API 명세서 간략한 영상 및 API 리스트
 https://github.com/keinn51/bae-duo-server/assets/79993356/3cdabe70-2f25-4abe-babe-c3520f276c39
